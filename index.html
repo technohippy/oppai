@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>cannon.js - constraints demo</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="style.css" type="text/css"/>
+  </head>
+  <body>
+    <script>var startApplyPressure = false;</script>
+    <script src="lib/cannon.js"></script>
+    <script src="lib/cannon.demo.js"></script>
+    <script src="lib/dat.gui.js"></script>
+    <script src="lib/Three.js"></script>
+    <script src="lib/Detector.js"></script>
+    <script src="lib/Stats.js"></script>
+    <script src="lib/smoothie.js"></script>
+    <script>
+
+        /**
+         * In this demo, we demonstrate some constraint types. Constraints
+         * removes degrees of freedom from bodies and forces them to move in
+         * a way defined by the constraint.
+         */
+
+        var demo = new CANNON.Demo();
+
+        var pressure = 10;
+        var bodies = [];
+        var geo = new THREE.IcosahedronGeometry(10, 2);
+
+        function applyPressure() {
+          geo.faces.forEach(function(face, i) {
+            var va = bodies[face.a];
+            var vb = bodies[face.b];
+            var vc = bodies[face.c];
+            var pa = va.position;
+            var pb = vb.position;
+            var pc = vc.position;
+            var ab = pb.vsub(pa);
+            var ac = pc.vsub(pa);
+            var lab = pa.distanceTo(pb);
+            var lac = pa.distanceTo(pc);
+            var rad = Math.acos(ab.dot(ac) / lab / lac);
+            var fbasesize = lab * lac * Math.sin(rad);
+            var fdir = ab.copy().cross(ac);
+            fdir.normalize();
+            var force = fdir.mult(pressure * fbasesize);
+            va.applyForce(force, va.position);
+            vb.applyForce(force, vb.position);
+            vc.applyForce(force, vc.position);
+          });
+        }
+
+      // Particle cloth. Same as the previous cloth but here we make the first row of particles static, nailing the cloth it in space
+      demo.addScene("Particle opi",function(){
+          var world = setupWorld(demo);
+          //world.solver.setSpookParams(1e20,3);
+          //world.solver.iterations = 18;
+          world.solver.iterations = 1;
+          var mass = 0.5;
+
+          geo.vertices.forEach(function(vertex, i) {
+            var len = 0.05;
+            var body = new CANNON.RigidBody(
+              vertex.x < 0 ? 0 : mass, 
+              new CANNON.Box(new CANNON.Vec3(len, len, len))
+            );
+            if (0 < vertex.x) body.force.z = 1000;
+            var scale = 4;
+            var offset = 5;
+            body.position.set(vertex.x/scale, vertex.y/scale, vertex.z/scale+offset);
+            world.add(body);
+            demo.addVisual(body);
+            bodies.push(body);
+          });
+
+          var connected = {};
+          geo.faces.forEach(function(face, i) {
+            var va = bodies[face.a];
+            var vb = bodies[face.b];
+            var vc = bodies[face.c];
+            var abDist = va.position.distanceTo(vb.position);
+            var bcDist = vb.position.distanceTo(vc.position);
+            var caDist = vc.position.distanceTo(va.position);
+            var abKey = Math.min(face.a, face.b) + ' ' + Math.max(face.a, face.b);
+            var bcKey = Math.min(face.b, face.c) + ' ' + Math.max(face.b, face.c);
+            var caKey = Math.min(face.c, face.a) + ' ' + Math.max(face.c, face.a);
+            if (!connected[abKey]) {
+              connected[abKey] = true;
+              world.addConstraint(new CANNON.DistanceConstraint(va, vb, abDist));
+            }
+            if (!connected[bcKey]) {
+              connected[bcKey] = true;
+              world.addConstraint(new CANNON.DistanceConstraint(vb, vc, bcDist));
+            }
+            if (!connected[caKey]) {
+              connected[caKey] = true;
+              world.addConstraint(new CANNON.DistanceConstraint(vc, va, caDist));
+            }
+          });
+          startApplyPressure = true;
+        });
+
+      // Particle cloth. Same as the previous cloth but here we make the first row of particles static, nailing the cloth it in space
+      demo.addScene("Particle cloth",function(){
+          var world = setupWorld(demo);
+          //world.solver.setSpookParams(1e20,3);
+          world.solver.iterations = 18;
+          var dist = 0.2;
+          var mass = 0.5;
+          var Nrows = 15, Ncols = 15;
+          var bodies = {}; // bodies["i j"] => particle
+          for(var i=0; i<Ncols; i++){
+            for(var j=0; j<Nrows; j++){
+              // Create a new body
+              var body = new CANNON.Particle(j==Nrows-1 ? 0 : mass);
+              body.position.set(i*dist,0,j*dist+5);
+              body.velocity.set(0, 3*(Math.sin(i*0.1)+Math.sin(j*0.1)),0);
+              bodies[i+" "+j] = body;
+              world.add(body);
+              demo.addVisual(body);
+            }
+          }
+          function connect(i1,j1,i2,j2){
+              world.addConstraint(new CANNON.DistanceConstraint(bodies[i1+" "+j1],bodies[i2+" "+j2],dist));
+          }
+          for(var i=0; i<Ncols; i++){
+            for(var j=0; j<Nrows; j++){
+              if(i<Ncols-1) connect(i,j,i+1,j);
+              if(j<Nrows-1) connect(i,j,i,j+1);
+            }
+          }
+        });
+
+      
+      function setupWorld(demo){
+        // Create world
+        var world = demo.getWorld();
+        world.gravity.set(0,0,-40);
+        world.broadphase = new CANNON.NaiveBroadphase();
+        world.solver.iterations = 10;
+      
+        // ground plane
+        var groundShape = new CANNON.Plane();
+        var groundBody = new CANNON.RigidBody(0,groundShape);
+        groundBody.position.set(0,0,1);
+        world.add(groundBody);
+        demo.addVisual(groundBody);
+
+        world.quatNormalizeFast = false;
+        world.quatNormalizeSkip = 0;
+
+        return world;
+      };
+      
+      demo.start();
+      
+    </script>
+  </body>
+</html>
