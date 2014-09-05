@@ -6,11 +6,10 @@ var Oppai = Oppai || {};
 Oppai.Oppai = function() {
   this.pressure = 0.6;
 
-  //this.threeGeometry = new THREE.IcosahedronGeometry(10, 2);
   this.threeGeometry = new THREE.IcosahedronGeometry(10, 3);
   var material = new THREE.MeshPhongMaterial({color: 0xffffff});
   this.threeMesh = new THREE.Mesh(this.threeGeometry, material);
-  this.threeMesh.castShadow = false;
+  this.threeMesh.castShadow = true;
   this.threeMesh.receiveShadow = true;
 
   this.cannonWorld = new CANNON.World();
@@ -18,6 +17,7 @@ Oppai.Oppai = function() {
   this.cannonWorld.broadphase = new CANNON.NaiveBroadphase();
   this.cannonWorld.solver.iterations = 2;
 
+  this.cannonBodies = [];
   var mass = 0.5;
   var len = 0.05;
   this.threeGeometry.vertices.forEach(function(vertex, i) {
@@ -27,14 +27,15 @@ Oppai.Oppai = function() {
     );
     if (0 < vertex.x) body.force.z = 1000;
     body.position.set(vertex.x, vertex.y, vertex.z); // TODO: copy?
+    this.cannonBodies.push(body);
     this.cannonWorld.add(body);
   }.bind(this));
 
   var connected = {};
   this.threeGeometry.faces.forEach(function(face, i) {
-    var va = this.cannonWorld.bodies[face.a];
-    var vb = this.cannonWorld.bodies[face.b];
-    var vc = this.cannonWorld.bodies[face.c];
+    var va = this.cannonBodies[face.a];
+    var vb = this.cannonBodies[face.b];
+    var vc = this.cannonBodies[face.c];
     var abDist = va.position.distanceTo(vb.position);
     var bcDist = vb.position.distanceTo(vc.position);
     var caDist = vc.position.distanceTo(va.position);
@@ -58,9 +59,9 @@ Oppai.Oppai = function() {
 
 Oppai.Oppai.prototype.applyPressure = function() {
   this.threeGeometry.faces.forEach(function(face, i) {
-    var va = this.cannonWorld.bodies[face.a];
-    var vb = this.cannonWorld.bodies[face.b];
-    var vc = this.cannonWorld.bodies[face.c];
+    var va = this.cannonBodies[face.a];
+    var vb = this.cannonBodies[face.b];
+    var vc = this.cannonBodies[face.c];
     var pa = va.position;
     var pb = vb.position;
     var pc = vc.position;
@@ -82,7 +83,7 @@ Oppai.Oppai.prototype.applyPressure = function() {
 Oppai.Oppai.prototype.step = function(worldOrScene) {
   this.applyPressure();
   this.cannonWorld.step(1/24);
-  this.cannonWorld.bodies.forEach(function(body, i) {
+  this.cannonBodies.forEach(function(body, i) {
     this.threeGeometry.vertices[i].set(body.position.x, body.position.y, body.position.z);
   }.bind(this));
   this.threeGeometry.verticesNeedUpdate = true;
