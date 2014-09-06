@@ -6,15 +6,16 @@ threeScene.add(oppai.threeMesh);
 var threeLight = new THREE.DirectionalLight(0xffffff);
 threeLight.position = new THREE.Vector3(1, 1, -1);
 threeLight.castShadow = true;
-threeLight.shadowBias = 0.0001;
-threeLight.shadowCameraNear = 1;
+threeLight.shadowBias = 0.001;
+threeLight.shadowCameraNear = -100;
 threeLight.shadowCameraFar = 100;
-threeLight.shadowCameraLeft = -50;
-threeLight.shadowCameraRight = 50;
-threeLight.shadowCameraTop = 50;
-threeLight.shadowCameraBottom = -50;
-threeLight.shadowMapWidth = 1024;
-threeLight.shadowMapHeight = 1024;
+threeLight.shadowCameraLeft = -100;
+threeLight.shadowCameraRight = 100;
+threeLight.shadowCameraTop = 100;
+threeLight.shadowCameraBottom = -100;
+threeLight.shadowMapWidth = 3072;
+threeLight.shadowMapHeight = 3072;
+//threeLight.shadowCameraVisible = true;
 threeScene.add(threeLight);
 threeScene.add(new THREE.AmbientLight(0x333333));
 
@@ -41,6 +42,12 @@ threeRenderer.shadowMapSoft = true;
 threeRenderer.shadowMapType = THREE.PCFShadowMap;
 document.body.appendChild(threeRenderer.domElement);
 
+/*
+var wall = new THREE.Mesh(new THREE.CubeGeometry(10, 20, 20), new THREE.MeshPhongMaterial({color: 0xff0000}));
+wall.position.copy(oppai.wall.position);
+threeScene.add(wall);
+*/
+
 var cannonBox = new CANNON.RigidBody(5, new CANNON.Box(new CANNON.Vec3(2, 2, 2)));
 cannonBox.position.set(0, -100, 0);
 oppai.cannonWorld.add(cannonBox);
@@ -49,25 +56,28 @@ threeBox.castShadow = true;
 threeBox.receiveShadow = false;
 threeScene.add(threeBox);
 document.addEventListener('keypress', function(event) {
-  //console.log(event.keyCode);
-  if (event.keyCode == 32) {
-    cannonBox.position.set(15, 5, 0);
-    cannonBox.velocity.set(-10, 0, 0);
+  console.log(event.keyCode);
+  if (event.keyCode == 32/*spc*/) {
+    cannonBox.position.set(25, 2, 0);
+    cannonBox.velocity.set(-50, 0, 0);
   }
-  else if (event.keyCode == 60) {
-    cameraAngle += Math.PI * 0.02;
-    setCamera();
-  }
-  else if (event.keyCode == 62) {
+  else if (event.keyCode == 60/*<*/ || event.keyCode == 122/*z*/) {
     cameraAngle -= Math.PI * 0.02;
     setCamera();
   }
-  else if (event.keyCode == 13) {
+  else if (event.keyCode == 62/*>*/ || event.keyCode == 99/*c*/) {
+    cameraAngle += Math.PI * 0.02;
+    setCamera();
+  }
+  else if (event.keyCode == 13/*enter*/) {
     oppai.cannonBodies.forEach(function(body) {
       if (5 < body.position.x) {
         body.applyImpulse(new CANNON.Vec3(0, 5, 0), body.position);
       }
     });
+  }
+  else if (event.keyCode == 119/*w*/) {
+    oppai.threeMesh.material.wireframe = !oppai.threeMesh.material.wireframe;
   }
 });
 

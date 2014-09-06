@@ -4,7 +4,8 @@ var Oppai = Oppai || {};
 "use strict";
 
 Oppai.Oppai = function() {
-  this.pressure = 0.6;
+  //this.pressure = 0.6;
+  this.pressure = 1;
 
   this.threeGeometry = new THREE.IcosahedronGeometry(10, 3);
   var material = new THREE.MeshPhongMaterial({color: 0xffffff});
@@ -21,10 +22,14 @@ Oppai.Oppai = function() {
 //  var core = new CANNON.RigidBody(0, new CANNON.Sphere(5));
 //  core.position.y -= 3;
 //  this.cannonWorld.add(core);
+  this.wall = new CANNON.RigidBody(0, new CANNON.Box(new CANNON.Vec3(5, 10, 10)));
+  this.wall.position.x -= 5;
+  this.cannonWorld.add(this.wall);
 
   this.cannonBodies = [];
   var mass = 0.5;
-  var len = 0.05;
+  //var len = 0.05;
+  var len = 0.03;
   this.threeGeometry.vertices.forEach(function(vertex, i) {
     var body = new CANNON.RigidBody(
       vertex.x < 0 ? 0 : mass, 
