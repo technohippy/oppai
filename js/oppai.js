@@ -3,21 +3,27 @@ var Oppai = Oppai || {};
 (function(Oppai) {
 "use strict";
 
-Oppai.Oppai = function() {
+Oppai.Oppai = function(center, cannonWorld) {
   //this.pressure = 0.6;
   this.pressure = 1;
 
   this.threeGeometry = new THREE.IcosahedronGeometry(10, 3);
   var material = new THREE.MeshPhongMaterial({color: 0xffffff});
   this.threeMesh = new THREE.Mesh(this.threeGeometry, material);
+  if (typeof(center) !== 'undefined') this.threeMesh.position.copy(center);
   this.threeMesh.castShadow = true;
   this.threeMesh.receiveShadow = true;
 
-  this.cannonWorld = new CANNON.World();
-  this.cannonWorld.gravity.set(0,-9.82,0);
-  this.cannonWorld.broadphase = new CANNON.NaiveBroadphase();
-  //this.cannonWorld.solver.iterations = 2;
-  this.cannonWorld.solver.iterations = 8;
+  if (typeof(cannonWorld) !== 'undefined') {
+    this.cannonWorld = cannonWorld;
+  }
+  else {
+    this.cannonWorld = new CANNON.World();
+    this.cannonWorld.gravity.set(0,-9.82,0);
+    this.cannonWorld.broadphase = new CANNON.NaiveBroadphase();
+    //this.cannonWorld.solver.iterations = 2;
+    this.cannonWorld.solver.iterations = 8;
+  }
 
 //  var core = new CANNON.RigidBody(0, new CANNON.Sphere(5));
 //  core.position.y -= 3;
