@@ -7,7 +7,7 @@ Oppai.RingControls = function(camera, center, lookAt, distance, initialAngle) {
   this.camera = camera;
   this.center = center || new THREE.Vector3(0, 0, 0);
   this.lookAt = lookAt || this.center;
-  this.angle = initialAngle || Math.PI;
+  this.angle = initialAngle || 2 * Math.PI / 3;
   this.distance = distance || 30;
 
   document.addEventListener('keypress', function(event) {

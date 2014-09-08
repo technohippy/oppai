@@ -39,8 +39,14 @@ var controls = new Oppai.RingControls(threeCamera, new THREE.Vector3(0, 8, 0), n
 var threeRenderer = constructRenderer();
 document.body.appendChild(threeRenderer.domElement);
 
-var oppai = new Oppai.Oppai();
+var oppai = location.search === '?2' ? 
+  new Oppai.Oppai(new THREE.Vector3(0, 0, -11)) :
+  new Oppai.Oppai(new THREE.Vector3(0, 0, 0));
 threeScene.add(oppai);
+if (location.search === '?2') {
+  var oppai2 = new Oppai.Oppai(new THREE.Vector3(0, 0, 11), oppai.cannonWorld);
+  threeScene.add(oppai2);
+}
 
 var hand = new Oppai.Hand(oppai);
 threeScene.add(hand);
@@ -48,19 +54,22 @@ threeScene.add(hand);
 document.addEventListener('keypress', function(event) {
   if (event.keyCode == 13/*enter*/) {
     oppai.cannonBodies.forEach(function(body) {
-      if (5 < body.position.x) {
-        body.applyImpulse(new CANNON.Vec3(0, 5, 0), body.position);
-      }
+      if (5 < body.position.x) body.applyImpulse(new CANNON.Vec3(0, 5, 0), body.position);
     });
   }
   else if (event.keyCode == 119/*w*/) {
     oppai.threeMesh.material.wireframe = !oppai.threeMesh.material.wireframe;
+    if (oppai2) oppai2.threeMesh.material.wireframe = !oppai2.threeMesh.material.wireframe;
+  }
+  else if (event.keyCode == 120/*x*/) {
+    oppai.pressure = Math.pow(oppai.pressure - 1, 2);
   }
 });
 
 (function render() {
   window.requestAnimationFrame(render);
   oppai.step();
+  if (oppai2) oppai2.step();
   hand.step();
   controls.update();
   threeRenderer.render(threeScene, threeCamera);

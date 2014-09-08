@@ -13,7 +13,8 @@ Oppai.Hand = function(oppai) {
 
   document.addEventListener('keypress', function(event) {
     if (event.keyCode == 32/*spc*/) {
-      this.cannonFinger.position.set(25, 2, 0);
+      //this.cannonFinger.position.set(25, 2, 0);
+      this.cannonFinger.position.set(25, 2, Math.random() * 30 - 15);
       this.cannonFinger.velocity.set(-50, 0, 0);
     }
   }.bind(this));

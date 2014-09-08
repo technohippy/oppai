@@ -7,10 +7,13 @@ Oppai.Oppai = function(center, cannonWorld) {
   //this.pressure = 0.6;
   this.pressure = 1;
 
+  this.center = center || {x:0, y:0, z:0};
+
   this.threeGeometry = new THREE.IcosahedronGeometry(10, 3);
-  var material = new THREE.MeshPhongMaterial({color: 0xffffff});
+  //var material = new THREE.MeshPhongMaterial({color: 0xffffff});
+  var material = new THREE.MeshPhongMaterial({color: 0xffffff, wireframe: true});
   this.threeMesh = new THREE.Mesh(this.threeGeometry, material);
-  if (typeof(center) !== 'undefined') this.threeMesh.position.copy(center);
+  this.threeMesh.position.copy(this.center);
   this.threeMesh.castShadow = true;
   this.threeMesh.receiveShadow = true;
 
@@ -37,6 +40,7 @@ Oppai.Oppai = function(center, cannonWorld) {
   //var len = 0.05;
   var len = 0.03;
   this.threeGeometry.vertices.forEach(function(vertex, i) {
+vertex = vertex.addSelf(this.center);
     var body = new CANNON.RigidBody(
       vertex.x < 0 ? 0 : mass, 
       new CANNON.Box(new CANNON.Vec3(len, len, len))
@@ -100,7 +104,9 @@ Oppai.Oppai.prototype.step = function(worldOrScene) {
   this.applyPressure();
   this.cannonWorld.step(1/24);
   this.cannonBodies.forEach(function(body, i) {
-    this.threeGeometry.vertices[i].set(body.position.x, body.position.y, body.position.z);
+    var position = body.position;
+position = position.vsub(this.center);
+    this.threeGeometry.vertices[i].set(position.x, position.y, position.z);
   }.bind(this));
   this.threeGeometry.verticesNeedUpdate = true;
 };
