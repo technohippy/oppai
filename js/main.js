@@ -51,8 +51,8 @@ if (location.search === '?2') {
   threeScene.add(oppai2);
 }
 
-var hand = new Oppai.Hand(oppai);
-threeScene.add(hand);
+var hand = new Oppai.Hand(oppai, threeCamera, threeScene);
+//threeScene.add(hand);
 
 document.addEventListener('keypress', function(event) {
   if (event.keyCode == 13/*enter*/) {

@@ -14,7 +14,7 @@ Oppai.Oppai = function(center, cannonWorld) {
     if (0 < yDia) vertex.y = yDia * 1.3 + this.center.y;
   }.bind(this));
   this.threeGeometry.verticesNeedUpdate = true;
-  var material = new THREE.MeshPhongMaterial({color: 0xffffff, wireframe: false});
+  var material = new THREE.MeshPhongMaterial({color: 0xffffff, wireframe: true});
   this.threeMesh = new THREE.Mesh(this.threeGeometry, material);
   this.threeMesh.position.copy(this.center);
   this.threeMesh.castShadow = true;

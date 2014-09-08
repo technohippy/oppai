@@ -3,14 +3,19 @@ var Oppai = Oppai || {};
 (function(Oppai) {
 "use strict";
 
-Oppai.Hand = function(oppai) {
-  this.cannonFinger = new CANNON.RigidBody(5, new CANNON.Box(new CANNON.Vec3(2, 2, 2)));
+Oppai.Hand = function(oppai, camera, scene) {
+  this.oppai = oppai;
+  this.camera = camera;
+  this.scene = scene;
+
+  //this.cannonFinger = new CANNON.RigidBody(5, new CANNON.Box(new CANNON.Vec3(2, 2, 2)));
+  this.cannonFinger = new CANNON.RigidBody(15, new CANNON.Box(new CANNON.Vec3(2, 2, 2)));
   this.cannonFinger.position.set(0, -100, 0);
-  oppai.cannonWorld.add(this.cannonFinger);
+  this.oppai.cannonWorld.add(this.cannonFinger);
   this.threeFinger = new THREE.Mesh(
     new THREE.SphereGeometry(2, 16, 16), 
-    //new THREE.MeshPhongMaterial({color: 0xffff00, opacity: 0.5, transparent: true})
-    new THREE.MeshPhongMaterial({color: 0x0000ff})
+    new THREE.MeshPhongMaterial({color: 0xffff00, opacity: 0, transparent: true})
+    //new THREE.MeshPhongMaterial({color: 0x0000ff})
   );
   this.threeFinger.castShadow = true;
   this.threeFinger.receiveShadow = false;
@@ -20,12 +25,35 @@ Oppai.Hand = function(oppai) {
   }.bind(this));
 
   document.addEventListener('touchend', function(event) {
-    this.touch();
+    var touchX = (event.touches[0].pageX / window.innerWidth ) *  2 - 1;
+    var touchY = (event.touches[0].pageY / window.innerHeight) * 2 + 1;
+    this.touchAt(touchX, touchY);
   }.bind(this));
 
+  this.projector = new THREE.Projector();
   document.addEventListener('click', function(event) {
-    this.touch();
+    var mouseX = (event.clientX / window.innerWidth ) *  2 - 1;
+    var mouseY = (event.clientY / window.innerHeight) * -2 + 1;
+    this.touchAt(mouseX, mouseY);
   }.bind(this));
+};
+
+Oppai.Hand.prototype.touchAt = function(x, y) {
+  var ray = this.projector.pickingRay(new THREE.Vector3(x, y, -1), this.camera);
+  var intersects = ray.intersectObject(this.oppai.threeMesh); // TODO
+//console.log(intersects);
+  if (intersects.length != 0) {
+    var intersect = intersects[0];
+    var object = intersect.object;
+    var geo = object.geometry;
+//    var point = geo.vertices[intersect.face.a].clone().add(object.position); // TODO
+    var point = geo.vertices[intersect.face.a];
+    var direction = new THREE.Vector3(0, 0, 0).subSelf(point).normalize();
+    var pos = new THREE.Vector3(point.x - direction.x, point.y - direction.y, point.z - direction.z); // TODO
+    var vel = direction.clone().multiplyScalar(10);
+    this.cannonFinger.position.set(pos.x, pos.y, pos.z);
+    this.cannonFinger.velocity.set(vel.x, vel.y, vel.z);
+  }
 };
 
 Oppai.Hand.prototype.touch = function() {
