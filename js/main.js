@@ -29,10 +29,7 @@ function constructRenderer() {
   return threeRenderer;
 }
 
-var oppai = new Oppai.Oppai();
-
 var threeScene = new THREE.Scene();
-threeScene.add(oppai);
 threeScene.add(constructDirectionalLight());
 threeScene.add(new THREE.AmbientLight(0x333333));
 
@@ -42,21 +39,14 @@ var controls = new Oppai.RingControls(threeCamera, new THREE.Vector3(0, 8, 0), n
 var threeRenderer = constructRenderer();
 document.body.appendChild(threeRenderer.domElement);
 
-var cannonBox = new CANNON.RigidBody(5, new CANNON.Box(new CANNON.Vec3(2, 2, 2)));
-cannonBox.position.set(0, -100, 0);
-oppai.cannonWorld.add(cannonBox);
-var threeBox = new THREE.Mesh(new THREE.CubeGeometry(2, 2, 2), new THREE.MeshPhongMaterial({color: 0xff0000}));
-threeBox.castShadow = true;
-threeBox.receiveShadow = false;
-threeScene.add(threeBox);
+var oppai = new Oppai.Oppai();
+threeScene.add(oppai);
+
+var hand = new Oppai.Hand(oppai);
+threeScene.add(hand);
 
 document.addEventListener('keypress', function(event) {
-//  console.log(event.keyCode);
-  if (event.keyCode == 32/*spc*/) {
-    cannonBox.position.set(25, 2, 0);
-    cannonBox.velocity.set(-50, 0, 0);
-  }
-  else if (event.keyCode == 13/*enter*/) {
+  if (event.keyCode == 13/*enter*/) {
     oppai.cannonBodies.forEach(function(body) {
       if (5 < body.position.x) {
         body.applyImpulse(new CANNON.Vec3(0, 5, 0), body.position);
@@ -71,8 +61,7 @@ document.addEventListener('keypress', function(event) {
 (function render() {
   window.requestAnimationFrame(render);
   oppai.step();
-  threeBox.position.copy(cannonBox.position);
-  threeBox.quaternion.copy(cannonBox.quaternion);
+  hand.step();
   controls.update();
   threeRenderer.render(threeScene, threeCamera);
 })();
