@@ -4,14 +4,17 @@ var Oppai = Oppai || {};
 "use strict";
 
 Oppai.Oppai = function(center, cannonWorld) {
-  //this.pressure = 0.6;
-  this.pressure = 1;
+  this.pressure = 1; /* TODO */
 
   this.center = center || {x:0, y:0, z:0};
 
   this.threeGeometry = new THREE.IcosahedronGeometry(10, 3);
-  //var material = new THREE.MeshPhongMaterial({color: 0xffffff});
-  var material = new THREE.MeshPhongMaterial({color: 0xffffff, wireframe: true});
+  this.threeGeometry.vertices.forEach(function(vertex, i) {
+    var yDia = vertex.y - this.center.y;
+    if (0 < yDia) vertex.y = yDia * 1.3 + this.center.y;
+  }.bind(this));
+  this.threeGeometry.verticesNeedUpdate = true;
+  var material = new THREE.MeshPhongMaterial({color: 0xffffff, wireframe: false});
   this.threeMesh = new THREE.Mesh(this.threeGeometry, material);
   this.threeMesh.position.copy(this.center);
   this.threeMesh.castShadow = true;
@@ -24,13 +27,9 @@ Oppai.Oppai = function(center, cannonWorld) {
     this.cannonWorld = new CANNON.World();
     this.cannonWorld.gravity.set(0,-9.82,0);
     this.cannonWorld.broadphase = new CANNON.NaiveBroadphase();
-    //this.cannonWorld.solver.iterations = 2;
-    this.cannonWorld.solver.iterations = 8;
+    this.cannonWorld.solver.iterations = 8; /* TODO */
   }
 
-//  var core = new CANNON.RigidBody(0, new CANNON.Sphere(5));
-//  core.position.y -= 3;
-//  this.cannonWorld.add(core);
   this.wall = new CANNON.RigidBody(0, new CANNON.Box(new CANNON.Vec3(5, 10, 10)));
   this.wall.position.x -= 5;
   this.cannonWorld.add(this.wall);
@@ -40,7 +39,7 @@ Oppai.Oppai = function(center, cannonWorld) {
   //var len = 0.05;
   var len = 0.03;
   this.threeGeometry.vertices.forEach(function(vertex, i) {
-vertex = vertex.addSelf(this.center);
+    vertex = vertex.addSelf(this.center);
     var body = new CANNON.RigidBody(
       vertex.x < 0 ? 0 : mass, 
       new CANNON.Box(new CANNON.Vec3(len, len, len))
@@ -105,7 +104,7 @@ Oppai.Oppai.prototype.step = function(worldOrScene) {
   this.cannonWorld.step(1/24);
   this.cannonBodies.forEach(function(body, i) {
     var position = body.position;
-position = position.vsub(this.center);
+    position = position.vsub(this.center);
     this.threeGeometry.vertices[i].set(position.x, position.y, position.z);
   }.bind(this));
   this.threeGeometry.verticesNeedUpdate = true;

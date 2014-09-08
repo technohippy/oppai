@@ -1,10 +1,11 @@
 (function() {
 "use strict";
 
-function constructDirectionalLight(color) {
+function constructDirectionalLight(direction, color) {
+  if (typeof(direction) === 'undefined') direction = new THREE.Vector3(1, 1, -1);
   if (typeof(color) === 'undefined') color = 0xffffff;
   var threeLight = new THREE.DirectionalLight(color);
-  threeLight.position = new THREE.Vector3(1, 1, -1);
+  threeLight.position = direction;
   threeLight.castShadow = true;
   threeLight.shadowBias = 0.001;
   threeLight.shadowCameraNear = -100;
@@ -31,6 +32,8 @@ function constructRenderer() {
 
 var threeScene = new THREE.Scene();
 threeScene.add(constructDirectionalLight());
+threeScene.add(constructDirectionalLight(new THREE.Vector3(0, 1, -1), 0x6666cc));
+//threeScene.add(constructDirectionalLight(new THREE.Vector3(1, -1, -1), 0x6666cc));
 threeScene.add(new THREE.AmbientLight(0x333333));
 
 var threeCamera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight);
