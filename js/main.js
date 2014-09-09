@@ -52,7 +52,7 @@ if (location.search === '?2') {
 }
 
 var hand = new Oppai.Hand(oppai, threeCamera, threeScene);
-//threeScene.add(hand);
+threeScene.add(hand);
 
 document.addEventListener('keypress', function(event) {
   if (event.keyCode == 13/*enter*/) {
@@ -73,7 +73,7 @@ document.addEventListener('keypress', function(event) {
   window.requestAnimationFrame(render);
   oppai.step();
   if (oppai2) oppai2.step();
-  //hand.step();
+  hand.step();
   controls.update();
   threeRenderer.render(threeScene, threeCamera);
 })();
