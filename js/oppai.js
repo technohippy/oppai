@@ -12,6 +12,7 @@ Oppai.Oppai = function(center, cannonWorld) {
   this.threeGeometry.vertices.forEach(function(vertex, i) {
     var yDia = vertex.y - this.center.y;
     if (0 < yDia) vertex.y = yDia * 1.3 + this.center.y;
+    if (vertex.x < -1) vertex.x = -1;
   }.bind(this));
   this.threeGeometry.verticesNeedUpdate = true;
   var material = new THREE.MeshPhongMaterial({color: 0xffffff, wireframe: true});
@@ -78,6 +79,8 @@ Oppai.Oppai = function(center, cannonWorld) {
 };
 
 Oppai.Oppai.prototype.applyPressure = function() {
+  //var tkbIndex = 1245;
+  var tkbIndex = -1;
   this.threeGeometry.faces.forEach(function(face, i) {
     var va = this.cannonBodies[face.a];
     var vb = this.cannonBodies[face.b];
@@ -93,7 +96,7 @@ Oppai.Oppai.prototype.applyPressure = function() {
     var fbasesize = lab * lac * Math.sin(rad);
     var fdir = ab.copy().cross(ac);
     fdir.normalize();
-    var force = fdir.mult(this.pressure * fbasesize);
+    var force = fdir.mult(this.pressure * fbasesize * (i == tkbIndex ? 100 : 1));
     va.applyForce(force, va.position);
     vb.applyForce(force, vb.position);
     vc.applyForce(force, vc.position);

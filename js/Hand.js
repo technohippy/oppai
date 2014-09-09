@@ -26,32 +26,35 @@ Oppai.Hand = function(oppai, camera, scene) {
   }.bind(this));
 
   document.addEventListener('touchstart', function(event) {
-    event.touches.forEach(function(touch, i) {
-      var touchX = (touch.pageX / window.innerWidth ) *  2 - 1;
-      var touchY = (touch.pageY / window.innerHeight) * 2 + 1;
+    event.preventDefault();
+    for (var i = 0; i < event.touches.length; i++) {
+      var touch = event.touches[i];
+      var touchX = (touch.pageX / window.innerWidth ) * 2 - 1;
+      var touchY = (touch.pageY / window.innerHeight) * -2 + 1;
       this.touchAt(touchX, touchY);
-    }.bind(this));
+    }
   }.bind(this));
 
   document.addEventListener('touchmove', function(event) {
     event.preventDefault();
-    event.touches.forEach(function(touch, i) {
-      var touchX = (touch.pageX / window.innerWidth ) *  2 - 1;
-      var touchY = (touch.pageY / window.innerHeight) * 2 + 1;
+    for (var i = 0; i < event.touches.length; i++) {
+      var touch = event.touches[i];
+      var touchX = (touch.pageX / window.innerWidth ) * 2 - 1;
+      var touchY = (touch.pageY / window.innerHeight) * -2 + 1;
       this.touchAt(touchX, touchY);
-    }.bind(this));
+    }
   }.bind(this));
 
   document.addEventListener('mousedown', function(event) {
     this.touching = true;
-    var mouseX = (event.clientX / window.innerWidth ) *  2 - 1;
+    var mouseX = (event.clientX / window.innerWidth ) * 2 - 1;
     var mouseY = (event.clientY / window.innerHeight) * -2 + 1;
     this.touchAt(mouseX, mouseY);
   }.bind(this));
 
   document.addEventListener('mousemove', function(event) {
     if (this.touching) {
-      var mouseX = (event.clientX / window.innerWidth ) *  2 - 1;
+      var mouseX = (event.clientX / window.innerWidth ) * 2 - 1;
       var mouseY = (event.clientY / window.innerHeight) * -2 + 1;
       this.touchAt(mouseX, mouseY);
     }
