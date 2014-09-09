@@ -30,9 +30,11 @@ Oppai.Oppai = function(center, cannonWorld) {
     this.cannonWorld.solver.iterations = 8; /* TODO */
   }
 
+  /*
   this.wall = new CANNON.RigidBody(0, new CANNON.Box(new CANNON.Vec3(5, 10, 10)));
   this.wall.position.x -= 5;
   this.cannonWorld.add(this.wall);
+  */
 
   this.cannonBodies = [];
   var mass = 0.5;

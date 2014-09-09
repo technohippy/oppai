@@ -10,7 +10,7 @@ Oppai.Hand = function(oppai, camera, scene) {
   this.touching = false;
   this.projector = new THREE.Projector();
 
-  this.cannonFinger = new CANNON.RigidBody(15, new CANNON.Box(new CANNON.Vec3(2, 2, 2)));
+  this.cannonFinger = new CANNON.RigidBody(5, new CANNON.Box(new CANNON.Vec3(2, 2, 2)));
   this.cannonFinger.position.set(0, -100, 0);
   this.oppai.cannonWorld.add(this.cannonFinger);
   this.threeFinger = new THREE.Mesh(
@@ -85,7 +85,6 @@ Oppai.Hand.prototype.touchAt = function(x, y) {
 Oppai.Hand.prototype.touchAt2 = function(x, y) {
   var ray = this.projector.pickingRay(new THREE.Vector3(x, y, -1), this.camera);
   var intersects = ray.intersectObject(this.oppai.threeMesh); // TODO
-//console.log(intersects);
   if (intersects.length != 0) {
     var intersect = intersects[0];
     var object = intersect.object;
@@ -102,6 +101,7 @@ Oppai.Hand.prototype.touchAt2 = function(x, y) {
 
 Oppai.Hand.prototype.touch = function() {
   this.cannonFinger.position.set(25, Math.random() * 16 - 8, Math.random() * 20 - 10);
+  //this.cannonFinger.velocity.set(-50, 0, 0);
   this.cannonFinger.velocity.set(-50, 0, 0);
 };
 
