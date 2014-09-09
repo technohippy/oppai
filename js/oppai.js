@@ -100,6 +100,13 @@ Oppai.Oppai.prototype.applyPressure = function() {
     va.applyForce(force, va.position);
     vb.applyForce(force, vb.position);
     vc.applyForce(force, vc.position);
+
+    /*
+    var rate = 8;
+    va.applyForce(force.mult(va.position.y < 0 ? 1 + Math.pow(va.position.y / rate, 2) : 1), va.position);
+    vb.applyForce(force.mult(vb.position.y < 0 ? 1 + Math.pow(vb.position.y / rate, 2) : 1), vb.position);
+    vc.applyForce(force.mult(vc.position.y < 0 ? 1 + Math.pow(vc.position.y / rate, 2) : 1), vc.position);
+    */
   }.bind(this));
 };
 

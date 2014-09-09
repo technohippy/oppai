@@ -68,6 +68,7 @@ Oppai.Hand = function(oppai, camera, scene) {
 Oppai.Hand.prototype.touchAt = function(x, y) {
   var ray = this.projector.pickingRay(new THREE.Vector3(x, y, -1), this.camera);
   var intersects = ray.intersectObject(this.oppai.threeMesh); // TODO
+  if (2 < intersects.length) intersects = intersects.slice(0, 2);
   intersects.forEach(function(intersect) {
     var ba = this.oppai.cannonBodies[intersect.face.a];
     var bb = this.oppai.cannonBodies[intersect.face.b];
