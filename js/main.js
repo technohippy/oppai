@@ -37,7 +37,8 @@ threeScene.add(constructDirectionalLight(new THREE.Vector3(0, 1, -1), 0x6666cc))
 threeScene.add(new THREE.AmbientLight(0x333333));
 
 var threeCamera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight);
-var controls = new Oppai.RingControls(threeCamera, new THREE.Vector3(0, 8, 0), new THREE.Vector3(0, 0, 0));
+//var controls = new Oppai.RingControls(threeCamera, new THREE.Vector3(0, 8, 0), new THREE.Vector3(0, 0, 0));
+var controls = new Oppai.RingControls(threeCamera, new THREE.Vector3(0, 0, 0), new THREE.Vector3(4, 0, 0));
 
 var threeRenderer = constructRenderer();
 document.body.appendChild(threeRenderer.domElement);
