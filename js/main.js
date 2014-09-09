@@ -73,7 +73,7 @@ document.addEventListener('keypress', function(event) {
   window.requestAnimationFrame(render);
   oppai.step();
   if (oppai2) oppai2.step();
-  hand.step();
+  //hand.step();
   controls.update();
   threeRenderer.render(threeScene, threeCamera);
 })();
