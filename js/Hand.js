@@ -10,7 +10,6 @@ Oppai.Hand = function(oppai, camera, scene) {
   this.touching = false;
   this.projector = new THREE.Projector();
 
-  //this.cannonFinger = new CANNON.RigidBody(5, new CANNON.Box(new CANNON.Vec3(2, 2, 2)));
   this.cannonFinger = new CANNON.RigidBody(15, new CANNON.Box(new CANNON.Vec3(2, 2, 2)));
   this.cannonFinger.position.set(0, -100, 0);
   this.oppai.cannonWorld.add(this.cannonFinger);

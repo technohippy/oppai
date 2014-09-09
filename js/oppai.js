@@ -44,7 +44,6 @@ Oppai.Oppai = function(center, cannonWorld) {
       vertex.x < 0 ? 0 : mass, 
       new CANNON.Box(new CANNON.Vec3(len, len, len))
     );
-    if (0 < vertex.x) body.force.z = 1000;
     body.position.set(vertex.x, vertex.y, vertex.z); // TODO: copy?
     this.cannonBodies.push(body);
     this.cannonWorld.add(body);
