@@ -29,7 +29,6 @@ Oppai.Hand = function(oppai, camera, scene) {
 //  }.bind(this));
 
   document.addEventListener('touchstart', function(event) {
-    this.touching = true;
     event.touches.forEach(function(touch, i) {
       var touchX = (touch.pageX / window.innerWidth ) *  2 - 1;
       var touchY = (touch.pageY / window.innerHeight) * 2 + 1;
@@ -38,17 +37,12 @@ Oppai.Hand = function(oppai, camera, scene) {
   }.bind(this));
 
   document.addEventListener('touchmove', function(event) {
-    if (this.touching) {
-      event.touches.forEach(function(touch, i) {
-        var touchX = (touch.pageX / window.innerWidth ) *  2 - 1;
-        var touchY = (touch.pageY / window.innerHeight) * 2 + 1;
-        this.touchAt(touchX, touchY);
-      }.bind(this));
-    }
-  }.bind(this));
-
-  document.addEventListener('touchend', function(event) {
-    this.touching = false;
+    event.preventDefault();
+    event.touches.forEach(function(touch, i) {
+      var touchX = (touch.pageX / window.innerWidth ) *  2 - 1;
+      var touchY = (touch.pageY / window.innerHeight) * 2 + 1;
+      this.touchAt(touchX, touchY);
+    }.bind(this));
   }.bind(this));
 
   document.addEventListener('mousedown', function(event) {
