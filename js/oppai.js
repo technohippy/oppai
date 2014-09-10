@@ -15,10 +15,14 @@ Oppai.Oppai = function(center, cannonWorld) {
     if (vertex.x < -1) vertex.x = -1;
   }.bind(this));
   this.threeGeometry.verticesNeedUpdate = true;
-  var material = new THREE.MeshPhongMaterial({color: 0xffffff, wireframe: true});
+  var material = new THREE.MeshPhongMaterial({
+    color: 0xffffff
+//    ,shading: THREE.FlatShading,
+//    ,wireframe: true
+  });
   this.threeMesh = new THREE.Mesh(this.threeGeometry, material);
   this.threeMesh.position.copy(this.center);
-  this.threeMesh.castShadow = true;
+//  this.threeMesh.castShadow = true;
   this.threeMesh.receiveShadow = true;
 
   if (typeof(cannonWorld) !== 'undefined') {
