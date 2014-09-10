@@ -73,7 +73,7 @@ Oppai.Hand.prototype.touchAt = function(x, y) {
     var bb = this.oppai.cannonBodies[intersect.face.b];
     var bc = this.oppai.cannonBodies[intersect.face.c];
 
-    var force = Oppai.isSmartphone ? 500 : 200;
+    var force = Oppai.isSmartphone ? 300 : 200;
     var da = new THREE.Vector3(0, 0, 0).subSelf(ba.position).normalize();
     ba.applyForce(da.multiplyScalar(force), ba.position);
 
