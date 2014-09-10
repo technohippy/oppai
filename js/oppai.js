@@ -28,8 +28,10 @@ Oppai.Oppai = function(center, cannonWorld) {
   });
   this.threeMesh = new THREE.Mesh(this.threeGeometry, material);
   this.threeMesh.position.copy(this.center);
-//  this.threeMesh.castShadow = true;
-  this.threeMesh.receiveShadow = true;
+  if (!Oppai.isSmartphone) {
+//    this.threeMesh.castShadow = true;
+    this.threeMesh.receiveShadow = true;
+  }
 
   if (typeof(cannonWorld) !== 'undefined') {
     this.cannonWorld = cannonWorld;

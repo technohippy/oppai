@@ -17,8 +17,10 @@ Oppai.Hand = function(oppai, camera, scene) {
     new THREE.SphereGeometry(2, 16, 16), 
     new THREE.MeshPhongMaterial({color: 0x0000ff})
   );
-  this.threeFinger.castShadow = true;
-  this.threeFinger.receiveShadow = false;
+  if (!Oppai.isSmartphone) {
+    this.threeFinger.castShadow = true;
+    this.threeFinger.receiveShadow = false;
+  }
 
   document.addEventListener('keypress', function(event) {
     if (event.keyCode == 32/*spc*/) this.touch();

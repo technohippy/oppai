@@ -6,17 +6,19 @@ function constructDirectionalLight(direction, color) {
   if (typeof(color) === 'undefined') color = 0xffffff;
   var threeLight = new THREE.DirectionalLight(color);
   threeLight.position = direction;
-  threeLight.castShadow = true;
-  threeLight.shadowBias = 0.001;
-  threeLight.shadowCameraNear = -100;
-  threeLight.shadowCameraFar = 100;
-  threeLight.shadowCameraLeft = -100;
-  threeLight.shadowCameraRight = 100;
-  threeLight.shadowCameraTop = 100;
-  threeLight.shadowCameraBottom = -100;
-  threeLight.shadowMapWidth = 3072;
-  threeLight.shadowMapHeight = 3072;
-  //threeLight.shadowCameraVisible = true;
+  if (!Oppai.isSmartphone) {
+    threeLight.castShadow = true;
+    threeLight.shadowBias = 0.001;
+    threeLight.shadowCameraNear = -100;
+    threeLight.shadowCameraFar = 100;
+    threeLight.shadowCameraLeft = -100;
+    threeLight.shadowCameraRight = 100;
+    threeLight.shadowCameraTop = 100;
+    threeLight.shadowCameraBottom = -100;
+    threeLight.shadowMapWidth = 3072;
+    threeLight.shadowMapHeight = 3072;
+    //threeLight.shadowCameraVisible = true;
+  }
   return threeLight;
 }
 
@@ -24,9 +26,11 @@ function constructRenderer() {
   var threeRenderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
   threeRenderer.setSize(window.innerWidth, window.innerHeight);
   threeRenderer.setClearColor(0x000000, 1);
-  threeRenderer.shadowMapEnabled = true;
-  threeRenderer.shadowMapSoft = true;
-  threeRenderer.shadowMapType = THREE.PCFShadowMap;
+  if (!Oppai.isSmartphone) {
+    threeRenderer.shadowMapEnabled = true;
+    threeRenderer.shadowMapSoft = true;
+    threeRenderer.shadowMapType = THREE.PCFShadowMap;
+  }
   return threeRenderer;
 }
 
