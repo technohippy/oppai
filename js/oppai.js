@@ -20,10 +20,11 @@ Oppai.Oppai = function(center, cannonWorld) {
     if (vertex.x < -1) vertex.x = -1;
   }.bind(this));
   this.threeGeometry.verticesNeedUpdate = true;
+  this.threeGeometry.computeFaceNormals();
+  this.threeGeometry.computeVertexNormals();
   var material = new THREE.MeshPhongMaterial({
-    color: 0xffffff
-//    color: 0xffccaa
-//    ,shading: THREE.FlatShading,
+//    color: 0xffffff
+    color: 0xffccaa
 //    ,wireframe: true
   });
   this.threeMesh = new THREE.Mesh(this.threeGeometry, material);
@@ -88,7 +89,7 @@ Oppai.Oppai = function(center, cannonWorld) {
 };
 
 Oppai.Oppai.prototype.applyPressure = function() {
-  //var tkbIndex = 1245;
+//  var tkbIndex = 949;
   var tkbIndex = -1;
   this.threeGeometry.faces.forEach(function(face, i) {
     var va = this.cannonBodies[face.a];
@@ -105,7 +106,7 @@ Oppai.Oppai.prototype.applyPressure = function() {
     var fbasesize = lab * lac * Math.sin(rad);
     var fdir = ab.copy().cross(ac);
     fdir.normalize();
-    var force = fdir.mult(this.pressure * fbasesize * (i == tkbIndex ? 100 : 1));
+    var force = fdir.mult(this.pressure * fbasesize * (i == tkbIndex ? 50 : 1));
     va.applyForce(force, va.position);
     vb.applyForce(force, vb.position);
     vc.applyForce(force, vc.position);
@@ -128,6 +129,8 @@ Oppai.Oppai.prototype.step = function(worldOrScene) {
     this.threeGeometry.vertices[i].set(position.x, position.y, position.z);
   }.bind(this));
   this.threeGeometry.verticesNeedUpdate = true;
+  this.threeGeometry.computeFaceNormals();
+  this.threeGeometry.computeVertexNormals();
 };
 
 }).call(this, Oppai);

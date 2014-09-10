@@ -35,9 +35,9 @@ function constructRenderer() {
 }
 
 var threeScene = new THREE.Scene();
-threeScene.add(constructDirectionalLight(new THREE.Vector3(0, 1, -1), 0xffffff));
-threeScene.add(constructDirectionalLight(new THREE.Vector3(-0.2, -1, 1), 0x666666));
-//threeScene.add(new THREE.AmbientLight(0x333333));
+threeScene.add(constructDirectionalLight(new THREE.Vector3(0.7, 1, -1), 0xffffff));
+threeScene.add(constructDirectionalLight(new THREE.Vector3(-0.3, -1, 1), 0x666666));
+threeScene.add(new THREE.AmbientLight(0x0f0603));
 
 var threeCamera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight);
 //var controls = new Oppai.RingControls(threeCamera, new THREE.Vector3(0, 8, 0), new THREE.Vector3(0, 0, 0));

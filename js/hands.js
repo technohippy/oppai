@@ -76,13 +76,14 @@ Oppai.Hand.prototype.touchAt = function(x, y) {
     var bc = this.oppai.cannonBodies[intersect.face.c];
 
     var force = Oppai.isSmartphone ? 300 : 200;
-    var da = new THREE.Vector3(0, 0, 0).subSelf(ba.position).normalize();
+    var targetPoint = new THREE.Vector3(-3, 0, 0);
+    var da = targetPoint.clone().subSelf(ba.position).normalize();
     ba.applyForce(da.multiplyScalar(force), ba.position);
 
-    var db = new THREE.Vector3(0, 0, 0).subSelf(bb.position).normalize();
+    var db = targetPoint.clone().subSelf(bb.position).normalize();
     bb.applyForce(db.multiplyScalar(force), bb.position);
 
-    var dc = new THREE.Vector3(0, 0, 0).subSelf(bc.position).normalize();
+    var dc = targetPoint.clone().subSelf(bc.position).normalize();
     bc.applyForce(dc.multiplyScalar(force), bc.position);
   }.bind(this));
 };
