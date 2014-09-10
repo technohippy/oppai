@@ -8,8 +8,7 @@ Oppai.RingControls = function(camera, center, lookAt, distance, initialAngle) {
   this.center = center || new THREE.Vector3(0, 0, 0);
   this.lookAt = lookAt || this.center;
   this.distance = distance || 30;
-  var ua = navigator.userAgent.toLowerCase();
-  if (0 <= ua.indexOf('iphone') || 0 <= ua.indexOf('android')) {
+  if (Oppai.isSmartphone) {
     this.angle = initialAngle || 9 * Math.PI / 10;
   }
   else {

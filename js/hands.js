@@ -15,7 +15,6 @@ Oppai.Hand = function(oppai, camera, scene) {
   this.oppai.cannonWorld.add(this.cannonFinger);
   this.threeFinger = new THREE.Mesh(
     new THREE.SphereGeometry(2, 16, 16), 
-    //new THREE.MeshPhongMaterial({color: 0xffff00, opacity: 0, transparent: true})
     new THREE.MeshPhongMaterial({color: 0x0000ff})
   );
   this.threeFinger.castShadow = true;
@@ -74,7 +73,7 @@ Oppai.Hand.prototype.touchAt = function(x, y) {
     var bb = this.oppai.cannonBodies[intersect.face.b];
     var bc = this.oppai.cannonBodies[intersect.face.c];
 
-    var force = 100;
+    var force = Oppai.isSmartphone ? 500 : 200;
     var da = new THREE.Vector3(0, 0, 0).subSelf(ba.position).normalize();
     ba.applyForce(da.multiplyScalar(force), ba.position);
 

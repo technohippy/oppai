@@ -3,7 +3,12 @@ var Oppai = Oppai || {};
 (function(Oppai) {
 "use strict";
 
+var ua = navigator.userAgent.toLowerCase();
+Oppai.isSmartphone = (0 <= ua.indexOf('iphone') || 0 <= ua.indexOf('android'));
+
 Oppai.Oppai = function(center, cannonWorld) {
+  function clamp(val, min, max) { return Math.max(max, Math.min(min, val)); }
+
   this.pressure = 1; /* TODO */
 
   this.center = center || {x:0, y:0, z:0};
@@ -17,6 +22,7 @@ Oppai.Oppai = function(center, cannonWorld) {
   this.threeGeometry.verticesNeedUpdate = true;
   var material = new THREE.MeshPhongMaterial({
     color: 0xffffff
+//    color: 0xffccaa
 //    ,shading: THREE.FlatShading,
 //    ,wireframe: true
   });
@@ -35,12 +41,6 @@ Oppai.Oppai = function(center, cannonWorld) {
     this.cannonWorld.solver.iterations = 8; /* TODO */
   }
 
-  /*
-  this.wall = new CANNON.RigidBody(0, new CANNON.Box(new CANNON.Vec3(5, 10, 10)));
-  this.wall.position.x -= 5;
-  this.cannonWorld.add(this.wall);
-  */
-
   this.cannonBodies = [];
   var mass = 0.5;
   //var len = 0.05;
@@ -52,6 +52,9 @@ Oppai.Oppai = function(center, cannonWorld) {
       new CANNON.Box(new CANNON.Vec3(len, len, len))
     );
     body.position.set(vertex.x, vertex.y, vertex.z); // TODO: copy?
+    //body.linearDamping = 0.3 + 0.6 * (vertex.y + 10) / 20;
+    //body.linearDamping = 0.3 + 0.6 * (vertex.x + 2) / 20;
+    body.linearDamping = clamp(0.3 + 0.6 * (vertex.y - vertex.x + 10) / 30, 0.3, 0.9);
     this.cannonBodies.push(body);
     this.cannonWorld.add(body);
   }.bind(this));

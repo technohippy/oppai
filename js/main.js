@@ -31,10 +31,8 @@ function constructRenderer() {
 }
 
 var threeScene = new THREE.Scene();
-//threeScene.add(constructDirectionalLight());
-//threeScene.add(constructDirectionalLight(new THREE.Vector3(0, 1, -1), 0x6666cc));
-threeScene.add(constructDirectionalLight(new THREE.Vector3(0, 1, -1), 0x999999));
-threeScene.add(constructDirectionalLight(new THREE.Vector3(-0.2, -1, 1), 0x6666cc));
+threeScene.add(constructDirectionalLight(new THREE.Vector3(0, 1, -1), 0xffffff));
+threeScene.add(constructDirectionalLight(new THREE.Vector3(-0.2, -1, 1), 0x666666));
 //threeScene.add(new THREE.AmbientLight(0x333333));
 
 var threeCamera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight);
@@ -44,17 +42,23 @@ var controls = new Oppai.RingControls(threeCamera, new THREE.Vector3(0, 0, 0), n
 var threeRenderer = constructRenderer();
 document.body.appendChild(threeRenderer.domElement);
 
-var oppai = location.search === '?2' ? 
-  new Oppai.Oppai(new THREE.Vector3(0, 0, -11)) :
-  new Oppai.Oppai(new THREE.Vector3(0, 0, 0));
-threeScene.add(oppai);
+var oppai, oppai2, hand, hand2;
 if (location.search === '?2') {
-  var oppai2 = new Oppai.Oppai(new THREE.Vector3(0, 0, 11), oppai.cannonWorld);
+  oppai = new Oppai.Oppai(new THREE.Vector3(0, 0, -11));
+  oppai2 = new Oppai.Oppai(new THREE.Vector3(0, 0, 11), oppai.cannonWorld);
+  hand = new Oppai.Hand(oppai, threeCamera, threeScene);
+  hand2 = new Oppai.Hand(oppai2, threeCamera, threeScene);
+  threeScene.add(oppai);
   threeScene.add(oppai2);
+  threeScene.add(hand);
+//  threeScene.add(hand2);
 }
-
-var hand = new Oppai.Hand(oppai, threeCamera, threeScene);
-threeScene.add(hand);
+else {
+  oppai = new Oppai.Oppai(new THREE.Vector3(0, 0, 0));
+  hand = new Oppai.Hand(oppai, threeCamera, threeScene);
+  threeScene.add(oppai);
+  threeScene.add(hand);
+}
 
 document.addEventListener('keypress', function(event) {
   if (event.keyCode == 13/*enter*/) {
@@ -65,6 +69,7 @@ document.addEventListener('keypress', function(event) {
   else if (event.keyCode == 119/*w*/) {
     oppai.threeMesh.material.wireframe = !oppai.threeMesh.material.wireframe;
     if (oppai2) oppai2.threeMesh.material.wireframe = !oppai2.threeMesh.material.wireframe;
+    hand.threeFinger.material.wireframe = !hand.threeFinger.material.wireframe;
   }
   else if (event.keyCode == 120/*x*/) {
     oppai.pressure = Math.pow(oppai.pressure - 1, 2);
@@ -74,7 +79,7 @@ document.addEventListener('keypress', function(event) {
 (function render() {
   window.requestAnimationFrame(render);
   oppai.step();
-  if (oppai2) oppai2.step();
+  if (typeof(oppai2) !== 'undefined') oppai2.step();
   hand.step();
   controls.update();
   threeRenderer.render(threeScene, threeCamera);
