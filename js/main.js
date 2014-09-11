@@ -40,7 +40,6 @@ threeScene.add(constructDirectionalLight(new THREE.Vector3(-0.3, -1, 1), 0x66666
 threeScene.add(new THREE.AmbientLight(0x0f0603));
 
 var threeCamera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight);
-//var controls = new Oppai.RingControls(threeCamera, new THREE.Vector3(0, 8, 0), new THREE.Vector3(0, 0, 0));
 var controls = new Oppai.RingControls(threeCamera, new THREE.Vector3(0, 0, 0), new THREE.Vector3(4, 0, 0));
 
 var threeRenderer = constructRenderer();
@@ -67,7 +66,9 @@ else {
 document.addEventListener('keypress', function(event) {
   if (event.keyCode == 13/*enter*/) {
     oppai.cannonBodies.forEach(function(body) {
-      if (5 < body.position.x) body.applyImpulse(new CANNON.Vec3(0, 5, 0), body.position);
+      if (0 < body.position.x) {
+        body.applyImpulse(new CANNON.Vec3(0, 1, 0).mult(body.position.x), body.position);
+      }
     });
   }
   else if (event.keyCode == 119/*w*/) {

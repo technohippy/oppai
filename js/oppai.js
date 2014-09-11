@@ -10,9 +10,7 @@ Oppai.Oppai = function(center, cannonWorld) {
   function clamp(val, min, max) { return Math.max(max, Math.min(min, val)); }
 
   this.pressure = 1; /* TODO */
-
   this.center = center || {x:0, y:0, z:0};
-
   this.threeGeometry = new THREE.IcosahedronGeometry(10, 3);
   this.threeGeometry.vertices.forEach(function(vertex, i) {
     var yDia = vertex.y - this.center.y;
@@ -25,6 +23,7 @@ Oppai.Oppai = function(center, cannonWorld) {
   var material = new THREE.MeshPhongMaterial({
 //    color: 0xffffff
     color: 0xffccaa
+    , emissive: 0x0f0603
 //    ,wireframe: true
   });
   this.threeMesh = new THREE.Mesh(this.threeGeometry, material);
@@ -33,6 +32,10 @@ Oppai.Oppai = function(center, cannonWorld) {
 //    this.threeMesh.castShadow = true;
     this.threeMesh.receiveShadow = true;
   }
+  this.threeLensFlare = new THREE.LensFlare(
+    THREE.ImageUtils.loadTexture('images/lensflare0.png'),
+    300, 0, THREE.AdditiveBlending);
+  this._setFlarePosition(this.threeGeometry.faces[949]);
 
   if (typeof(cannonWorld) !== 'undefined') {
     this.cannonWorld = cannonWorld;
@@ -55,9 +58,7 @@ Oppai.Oppai = function(center, cannonWorld) {
       new CANNON.Box(new CANNON.Vec3(len, len, len))
     );
     body.position.set(vertex.x, vertex.y, vertex.z); // TODO: copy?
-    //body.linearDamping = 0.3 + 0.6 * (vertex.y + 10) / 20;
-    //body.linearDamping = 0.3 + 0.6 * (vertex.x + 2) / 20;
-    body.linearDamping = clamp(0.3 + 0.6 * (vertex.y - vertex.x + 10) / 30, 0.3, 0.9);
+    body.linearDamping = clamp(0.1 + 0.4 * (vertex.y - vertex.x + 10) / 30, 0.1, 0.5);
     this.cannonBodies.push(body);
     this.cannonWorld.add(body);
   }.bind(this));
@@ -88,9 +89,20 @@ Oppai.Oppai = function(center, cannonWorld) {
   }.bind(this));
 };
 
+Oppai.Oppai.prototype._setFlarePosition = function(face) {
+  return; // TODO
+  var pa = this.threeGeometry.vertices[face.a];
+  var pb = this.threeGeometry.vertices[face.b];
+  var pc = this.threeGeometry.vertices[face.c];
+  this.threeLensFlare.position = new THREE.Vector3(
+    (pa.x + pb.x + pc.x) / 3, 
+    (pa.y + pb.y + pc.y) / 3, 
+    (pa.z + pb.z + pc.z) / 3);
+};
+
 Oppai.Oppai.prototype.applyPressure = function() {
-//  var tkbIndex = 949;
-  var tkbIndex = -1;
+  var tkbIndex = 949;
+//  var tkbIndex = -1;
   this.threeGeometry.faces.forEach(function(face, i) {
     var va = this.cannonBodies[face.a];
     var vb = this.cannonBodies[face.b];
@@ -106,7 +118,7 @@ Oppai.Oppai.prototype.applyPressure = function() {
     var fbasesize = lab * lac * Math.sin(rad);
     var fdir = ab.copy().cross(ac);
     fdir.normalize();
-    var force = fdir.mult(this.pressure * fbasesize * (i == tkbIndex ? 50 : 1));
+    var force = fdir.mult(this.pressure * fbasesize * (i == tkbIndex ? 15 : 1));
     va.applyForce(force, va.position);
     vb.applyForce(force, vb.position);
     vc.applyForce(force, vc.position);
@@ -118,6 +130,7 @@ Oppai.Oppai.prototype.applyPressure = function() {
     vc.applyForce(force.mult(vc.position.y < 0 ? 1 + Math.pow(vc.position.y / rate, 2) : 1), vc.position);
     */
   }.bind(this));
+  this._setFlarePosition(this.threeGeometry.faces[949]);
 };
 
 Oppai.Oppai.prototype.step = function(worldOrScene) {
