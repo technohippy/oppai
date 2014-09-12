@@ -9,6 +9,11 @@ Oppai.isSmartphone = (0 <= ua.indexOf('iphone') || 0 <= ua.indexOf('android'));
 Oppai.Oppai = function(center, cannonWorld) {
   function clamp(val, min, max) { return Math.max(max, Math.min(min, val)); }
 
+  this.autoSwing = false;
+  this.autoSwingStep = 5;
+  this.autoSwingSize = 2;
+  this.autoSwingCycle = 0;
+
   this.pressure = 1; /* TODO */
   this.center = center || {x:0, y:0, z:0};
   this.threeGeometry = new THREE.IcosahedronGeometry(10, 3);
@@ -45,6 +50,7 @@ Oppai.Oppai = function(center, cannonWorld) {
     this.cannonWorld.gravity.set(0,-9.82,0);
     this.cannonWorld.broadphase = new CANNON.NaiveBroadphase();
     this.cannonWorld.solver.iterations = 8; /* TODO */
+    this.autoSwing = true;
   }
 
   this.cannonBodies = [];
@@ -133,8 +139,21 @@ Oppai.Oppai.prototype.applyPressure = function() {
   this._setFlarePosition(this.threeGeometry.faces[949]);
 };
 
+Oppai.Oppai.prototype.shake = function() {
+  this.cannonBodies.forEach(function(body) {
+    if (0 < body.position.x) {
+      body.applyImpulse(new CANNON.Vec3(0, 1, 0).mult(body.position.x), body.position);
+    }
+  });
+};
+
 Oppai.Oppai.prototype.step = function(worldOrScene) {
   this.applyPressure();
+  if (this.autoSwing) {
+    this.cannonWorld.gravity.x = 0.5 * this.autoSwingSize * Math.cos(this.autoSwingCycle * 0.5);
+    this.cannonWorld.gravity.z = this.autoSwingSize * Math.sin(this.autoSwingCycle);
+    this.autoSwingCycle += this.autoSwingStep / 180 * Math.PI;
+  }
   this.cannonWorld.step(1/24);
   this.cannonBodies.forEach(function(body, i) {
     var position = body.position;

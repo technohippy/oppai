@@ -7,3 +7,56 @@ body {
   font-family:Monospace;
   background-color:black;
 }
+.sidebar-button {
+  width:36px;
+  height:36px;
+  border-radius:8px; -webkit-border-radius:8px; -miz-border-radius:8px;
+  border:none;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-color:rgba(255,255,255,1);
+  margin:5px;
+}
+#sidebar-button {
+  z-index:999;
+  position:absolute;
+  top:5px;
+}
+#sidebar-button.open {
+  background-image:url(images/f_003_84.png);
+}
+#sidebar-button.close {
+  background-color:rgba(255,255,255,0.5);
+  background-image:url(images/f_003_85.png);
+}
+#sidebar-button.close:hover {
+  background-color:rgba(255,255,255,1);
+  background-image:url(images/f_003_85.png);
+}
+#sidebar {
+  position:absolute;
+  top:0;
+  width:100px;
+  height:100%;
+  background-color:rgba(255,255,255,0.5);
+  -webkit-transition:left 0.3s ease-in-out;
+  padding-top:60px;
+}
+#sidebar.open {
+  left:0;
+}
+#sidebar.close {
+  left:-100px;
+}
+#plane-button {
+  background-image:url(images/f_001_21.png);
+}
+#mesh-button {
+  background-image:url(images/f_001_20.png);
+}
+#throw-button {
+  background-image:url(images/f_002_18.png);
+}
+#shake-button {
+  background-image:url(images/f_003_70.png);
+}

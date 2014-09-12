@@ -1,5 +1,5 @@
-(function() {
-"use strict";
+//(function() {
+//"use strict";
 
 function constructDirectionalLight(direction, color) {
   if (typeof(direction) === 'undefined') direction = new THREE.Vector3(1, 1, -1);
@@ -65,11 +65,7 @@ else {
 
 document.addEventListener('keypress', function(event) {
   if (event.keyCode == 13/*enter*/) {
-    oppai.cannonBodies.forEach(function(body) {
-      if (0 < body.position.x) {
-        body.applyImpulse(new CANNON.Vec3(0, 1, 0).mult(body.position.x), body.position);
-      }
-    });
+    oppai.shake();
   }
   else if (event.keyCode == 119/*w*/) {
     oppai.threeMesh.material.wireframe = !oppai.threeMesh.material.wireframe;
@@ -90,4 +86,4 @@ document.addEventListener('keypress', function(event) {
   threeRenderer.render(threeScene, threeCamera);
 })();
 
-})();
+//})();
