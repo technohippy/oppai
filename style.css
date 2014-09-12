@@ -20,18 +20,21 @@ body {
 #sidebar-button {
   z-index:999;
   position:absolute;
-  top:5px;
+  top:10px;
+  -webkit-transition:right 0.3s ease-in-out;
 }
 #sidebar-button.open {
-  background-image:url(images/f_003_84.png);
+  background-image:url(images/f_003_85.png);
+  right:105px;
 }
 #sidebar-button.close {
-  background-color:rgba(255,255,255,0.5);
-  background-image:url(images/f_003_85.png);
+  /*background-color:rgba(255,255,255,0.5);*/
+  background-image:url(images/f_003_84.png);
+  right:5px;
 }
 #sidebar-button.close:hover {
-  background-color:rgba(255,255,255,1);
-  background-image:url(images/f_003_85.png);
+  /*background-color:rgba(255,255,255,1);*/
+  background-image:url(images/f_003_84.png);
 }
 #sidebar {
   position:absolute;
@@ -39,14 +42,14 @@ body {
   width:100px;
   height:100%;
   background-color:rgba(255,255,255,0.5);
-  -webkit-transition:left 0.3s ease-in-out;
-  padding-top:60px;
+  -webkit-transition:right 0.3s ease-in-out;
+  padding-top:10px;
 }
 #sidebar.open {
-  left:0;
+  right:0;
 }
 #sidebar.close {
-  left:-100px;
+  right:-100px;
 }
 #plane-button {
   background-image:url(images/f_001_21.png);
@@ -59,4 +62,10 @@ body {
 }
 #shake-button {
   background-image:url(images/f_003_70.png);
+}
+#turn-right-button {
+  background-image:url(images/s_004_44.png);
+}
+#turn-left-button {
+  background-image:url(images/s_004_43.png);
 }
