@@ -21,11 +21,12 @@ body {
   z-index:999;
   position:absolute;
   top:10px;
-  -webkit-transition:right 0.3s ease-in-out;
+  /*-webkit-transition:right 0.3s ease-in-out;*/
 }
 #sidebar-button.open {
   background-image:url(images/f_003_85.png);
-  right:105px;
+  /*right:105px;*/
+  right:5px;
 }
 #sidebar-button.close {
   /*background-color:rgba(255,255,255,0.5);*/
@@ -43,7 +44,7 @@ body {
   height:100%;
   background-color:rgba(255,255,255,0.5);
   -webkit-transition:right 0.3s ease-in-out;
-  padding-top:10px;
+  padding-top:60px;
 }
 #sidebar.open {
   right:0;
