@@ -22,15 +22,27 @@ document.getElementById('mesh-button').addEventListener(clickEvent(), function(e
   if (oppai2) oppai2.threeMesh.material.wireframe = true;
   hand.threeFinger.material.wireframe = true;
 });
+document.getElementById('turn-right-button').addEventListener(clickEvent(), function(event) {
+  controls.angle -= Math.PI * 0.01;
+});
+document.getElementById('turn-left-button').addEventListener(clickEvent(), function(event) {
+  controls.angle += Math.PI * 0.01;
+});
+document.getElementById('zoom-in-button').addEventListener(clickEvent(), function(event) {
+  controls.distance -= 0.5;
+});
+document.getElementById('zoom-out-button').addEventListener(clickEvent(), function(event) {
+  controls.distance += 0.5;
+});
 document.getElementById('throw-button').addEventListener(clickEvent(), function(event) {
   hand.touch();
 });
 document.getElementById('shake-button').addEventListener(clickEvent(), function(event) {
   oppai.shake();
 });
-document.getElementById('turn-right-button').addEventListener(clickEvent(), function(event) {
-  controls.angle -= Math.PI * 0.01;
+document.getElementById('inflate-button').addEventListener(clickEvent(), function(event) {
+  oppai.pressure = 1;
 });
-document.getElementById('turn-left-button').addEventListener(clickEvent(), function(event) {
-  controls.angle += Math.PI * 0.01;
+document.getElementById('deflate-button').addEventListener(clickEvent(), function(event) {
+  oppai.pressure = 0;
 });

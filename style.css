@@ -52,21 +52,13 @@ body {
 #sidebar.close {
   right:-100px;
 }
-#plane-button {
-  background-image:url(images/f_001_21.png);
-}
-#mesh-button {
-  background-image:url(images/f_001_20.png);
-}
-#throw-button {
-  background-image:url(images/f_002_18.png);
-}
-#shake-button {
-  background-image:url(images/f_003_70.png);
-}
-#turn-right-button {
-  background-image:url(images/s_004_44.png);
-}
-#turn-left-button {
-  background-image:url(images/s_004_43.png);
-}
+#plane-button { background-image:url(images/f_001_21.png); }
+#mesh-button { background-image:url(images/f_001_20.png); }
+#throw-button { background-image:url(images/f_002_18.png); }
+#shake-button { background-image:url(images/f_003_70.png); }
+#turn-right-button { background-image:url(images/s_004_44.png); }
+#turn-left-button { background-image:url(images/s_004_43.png); }
+#inflate-button { background-image:url(images/f_003_37.png); }
+#deflate-button { background-image:url(images/f_003_40.png); }
+#zoom-in-button { background-image:url(images/f_003_43.png); }
+#zoom-out-button { background-image:url(images/f_003_44.png); }
