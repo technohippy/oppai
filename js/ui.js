@@ -36,13 +36,17 @@ document.getElementById('zoom-out-button').addEventListener(clickEvent(), functi
 });
 document.getElementById('throw-button').addEventListener(clickEvent(), function(event) {
   hand.touch();
+  if (hand2) hand2.touch();
 });
 document.getElementById('shake-button').addEventListener(clickEvent(), function(event) {
   oppai.shake();
+  if (oppai2) oppai2.shake();
 });
 document.getElementById('inflate-button').addEventListener(clickEvent(), function(event) {
   oppai.setPressure(1);
+  if (oppai2) oppai2.setPressure(1);
 });
 document.getElementById('deflate-button').addEventListener(clickEvent(), function(event) {
   oppai.setPressure(0);
+  if (oppai2) oppai2.setPressure(0);
 });
