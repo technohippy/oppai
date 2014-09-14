@@ -54,7 +54,7 @@ if (location.search === '?2') {
   threeScene.add(oppai);
   threeScene.add(oppai2);
   threeScene.add(hand);
-//  threeScene.add(hand2);
+  threeScene.add(hand2);
 }
 else {
   oppai = new Oppai.Oppai(new THREE.Vector3(0, 0, 0));
@@ -66,22 +66,21 @@ else {
 document.addEventListener('keypress', function(event) {
   if (event.keyCode == 13/*enter*/) {
     oppai.shake();
+    if (oppai2) oppai2.shake();
   }
   else if (event.keyCode == 119/*w*/) {
     oppai.threeMesh.material.wireframe = !oppai.threeMesh.material.wireframe;
     if (oppai2) oppai2.threeMesh.material.wireframe = !oppai2.threeMesh.material.wireframe;
-    hand.threeFinger.material.wireframe = !hand.threeFinger.material.wireframe;
+//    hand.threeFinger.material.wireframe = !hand.threeFinger.material.wireframe;
   }
   else if (event.keyCode == 120/*x*/) {
     oppai.pressure = Math.pow(oppai.pressure - 1, 2);
+    if (oppai2) oppai2.pressure = Math.pow(oppai2.pressure - 1, 2);
   }
 });
 
 (function render() {
   window.requestAnimationFrame(render);
-  oppai.step();
-  if (typeof(oppai2) !== 'undefined') oppai2.step();
-  hand.step();
   controls.update();
   threeRenderer.render(threeScene, threeCamera);
 })();
