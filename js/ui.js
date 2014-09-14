@@ -41,8 +41,8 @@ document.getElementById('shake-button').addEventListener(clickEvent(), function(
   oppai.shake();
 });
 document.getElementById('inflate-button').addEventListener(clickEvent(), function(event) {
-  oppai.pressure = 1;
+  oppai.setPressure(1);
 });
 document.getElementById('deflate-button').addEventListener(clickEvent(), function(event) {
-  oppai.pressure = 0;
+  oppai.setPressure(0);
 });

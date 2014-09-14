@@ -74,8 +74,8 @@ document.addEventListener('keypress', function(event) {
 //    hand.threeFinger.material.wireframe = !hand.threeFinger.material.wireframe;
   }
   else if (event.keyCode == 120/*x*/) {
-    oppai.pressure = Math.pow(oppai.pressure - 1, 2);
-    if (oppai2) oppai2.pressure = Math.pow(oppai2.pressure - 1, 2);
+    oppai.togglePressure();
+    if (oppai2) oppai2.togglePressure();
   }
 });
 

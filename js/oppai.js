@@ -60,6 +60,14 @@ Oppai.Oppai.prototype.setupWorker = function() {
   }.bind(this));
 };
 
+Oppai.Oppai.prototype.setPressure = function(pressure) {
+  this.worker.postMessage({command:'setPressure', pressure:pressure});
+};
+
+Oppai.Oppai.prototype.togglePressure = function() {
+  this.worker.postMessage({command:'togglePressure'});
+};
+
 Oppai.Oppai.prototype.touch = function() {
   this.worker.postMessage({command:'touch'});
 };

@@ -95,6 +95,14 @@ self.applyPressure = function() {
   });
 };
 
+self.setPressure = function(data) {
+  self.pressure = data.pressure;
+};
+
+self.togglePressure = function() {
+  self.pressure = Math.pow(self.pressure - 1, 2);
+};
+
 self.shake = function() {
   self.oppaiBodies.forEach(function(body) {
     if (0 < body.position.x) {
@@ -171,6 +179,12 @@ self.addEventListener('message', function(event) {
   switch (data.command) {
     case 'initialize':
       self.initialize(data);
+      break;
+    case 'setPressure':
+      self.setPressure(data);
+      break;
+    case 'togglePressure':
+      self.togglePressure(data);
       break;
     case 'shake':
       self.shake(data);
