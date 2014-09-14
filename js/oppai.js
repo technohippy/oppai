@@ -38,8 +38,7 @@ Oppai.Oppai.prototype.setupWorker = function() {
   this.worker.postMessage({
     command:'initialize', 
     geometry:this.threeGeometry, 
-    center:this.center, 
-    isSmartphone:Oppai.isSmartphone
+    center:this.center
   });
   this.worker.addEventListener('message', function(event) {
     var oppaiPoisitions = event.data.oppaiPositions;

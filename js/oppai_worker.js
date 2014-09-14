@@ -1,6 +1,5 @@
 importScripts('../lib/cannon.js');
 
-self.isSmartphone = false;
 self.autoSwing = true;
 self.autoSwingStep = 5;
 self.autoSwingSize = 2;
@@ -19,7 +18,6 @@ self.clamp = function(val, min, max) { return Math.max(max, Math.min(min, val));
 
 self.initialize = function(data) {
   if (typeof(data.center) !== 'undefined') self.center = data.center;
-  if (typeof(data.isSmartphone) !== 'undefined') self.isSmartphone = data.isSmartphone;
   self.oppaiGeometry = data.geometry;
 
   var mass = 0.5;
@@ -108,7 +106,11 @@ self.shake = function() {
 self.touch = function(data) {
   var fingerIndex = typeof(data.index) === 'undefined' ? 0 : data.index;
   var fingerBody = self.fingerBodies[fingerIndex];
-  fingerBody.position.set(25, Math.random() * 16 - 8, Math.random() * 20 - 10);
+  fingerBody.position.set(
+    self.center.x + 25,
+    self.center.y + Math.random() * 16 - 8, 
+    self.center.z + Math.random() * 20 - 10
+  );
   fingerBody.velocity.set(-50, 0, 0);
 };
 
@@ -119,7 +121,7 @@ self.touchAt = function(data) {
     var bb = self.oppaiBodies[face.b];
     var bc = self.oppaiBodies[face.c];
 
-    var force = self.isSmartphone ? 300 : 200;
+    var force = 200;
     var targetPoint = new CANNON.Vec3(-3, 0, 0);
     var da = targetPoint.copy().vsub(ba.position);
     da.normalize();
@@ -155,9 +157,9 @@ self.step = function(dt) {
     }.bind(this)),
     fingerPositions:self.fingerBodies.map(function(body) {
       return {
-        x:body.position.x - self.center.x, 
-        y:body.position.y - self.center.y,
-        z:body.position.z - self.center.z
+        x:body.position.x,
+        y:body.position.y,
+        z:body.position.z
       };
     }.bind(this))
   });
