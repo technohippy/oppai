@@ -22,10 +22,9 @@ Oppai.Oppai = function(center, worker) {
   this.threeGeometry.computeFaceNormals();
   this.threeGeometry.computeVertexNormals();
   var material = new THREE.MeshPhongMaterial({
-//    color: 0xffffff
     color: 0xffccaa
     , emissive: 0x0f0603
-//    ,wireframe: true
+    //,wireframe: true
   });
   this.threeMesh = new THREE.Mesh(this.threeGeometry, material);
   this.threeMesh.position.copy(this.center);
@@ -35,22 +34,26 @@ Oppai.Oppai = function(center, worker) {
   }
   this.threeFingers = [];
   if (typeof(worker) === 'undefined') {
-    this.setupWorker();
+    this.worker = new Worker('js/oppai_worker.js');
+    this.setupWorker('initialize');
   }
   else {
     this.worker = worker;
+    this.setupWorker('constructOppai');
   }
 };
 
-Oppai.Oppai.prototype.setupWorker = function() {
-  this.worker = new Worker('js/oppai_worker.js');
+Oppai.Oppai.prototype.setupWorker = function(command) {
   this.worker.postMessage({
     id: this.id,
-    command:'initialize', 
+    command:command,
     geometry:this.threeGeometry, 
     center:this.center
   });
+
   this.worker.addEventListener('message', function(event) {
+    if (event.data.id != this.id) return;
+
     var oppaiPoisitions = event.data.oppaiPositions;
     oppaiPoisitions.forEach(function(position, i) {
       this.threeGeometry.vertices[i].set(position.x, position.y, position.z);

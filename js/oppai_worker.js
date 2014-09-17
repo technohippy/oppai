@@ -1,45 +1,32 @@
 importScripts('../lib/cannon.js');
 
-self.autoSwing = true;
-self.autoSwingStep = 5;
-self.autoSwingSize = 2;
-self.autoSwingCycle = 0;
-self.pressure = 1; /* TODO */
-self.center = {x:0, y:0, z:0};
-self.oppaiGeometry = null;
-self.oppaiBodies = [];
-self.fingerBodies = [];
-self.world = new CANNON.World();
-self.world.gravity.set(0,-9.82,0);
-self.world.broadphase = new CANNON.NaiveBroadphase();
-self.world.solver.iterations = 8; /* TODO */
-
-self.clamp = function(val, min, max) { return Math.max(max, Math.min(min, val)); };
-
-self.initialize = function(data) {
-  if (typeof(data.center) !== 'undefined') self.center = data.center;
-  self.oppaiGeometry = data.geometry;
+function Oppai(id, geometry, center, fingerCount) {
+  this.id = id;
+  this.oppaiGeometry = geometry;
+  this.center = typeof(center) === 'undefined' ? {x:0, y:0, z:0} : center;
+  this.fingerCount = typeof(fingerCount) === 'undefined' ? 1 : fingerCount;
+  this.oppaiBodies = [];
+  this.fingerBodies = [];
 
   var mass = 0.5;
   var len = 0.03;
-  self.oppaiGeometry.vertices.forEach(function(vertex, i) {
-    vertex = new CANNON.Vec3(vertex.x + self.center.x, vertex.y + self.center.y, vertex.z + self.center.z);
-    //vertex = vertex.addSelf(self.center);
+  this.oppaiGeometry.vertices.forEach(function(vertex, i) {
+    vertex = new CANNON.Vec3(vertex.x + this.center.x, vertex.y + this.center.y, vertex.z + this.center.z);
     var body = new CANNON.RigidBody(
       vertex.x < 0 ? 0 : mass, 
       new CANNON.Box(new CANNON.Vec3(len, len, len))
     );
     body.position.set(vertex.x, vertex.y, vertex.z); // TODO: copy?
     body.linearDamping = self.clamp(0.1 + 0.4 * (vertex.y - vertex.x + 10) / 30, 0.1, 0.5);
-    self.oppaiBodies.push(body);
+    this.oppaiBodies.push(body);
     self.world.add(body);
-  });
+  }.bind(this));
 
   var connected = {};
-  self.oppaiGeometry.faces.forEach(function(face, i) {
-    var va = self.oppaiBodies[face.a];
-    var vb = self.oppaiBodies[face.b];
-    var vc = self.oppaiBodies[face.c];
+  this.oppaiGeometry.faces.forEach(function(face, i) {
+    var va = this.oppaiBodies[face.a];
+    var vb = this.oppaiBodies[face.b];
+    var vc = this.oppaiBodies[face.c];
     var abDist = va.position.distanceTo(vb.position);
     var bcDist = vb.position.distanceTo(vc.position);
     var caDist = vc.position.distanceTo(va.position);
@@ -58,25 +45,22 @@ self.initialize = function(data) {
       connected[caKey] = true;
       self.world.addConstraint(new CANNON.DistanceConstraint(vc, va, caDist));
     }
-  });
+  }.bind(this));
 
-  var fingerCount = typeof(data.fingerCount) === 'undefined' ? 1 : data.fingerCount;
-  for (var i = 0; i < fingerCount; i++) {
+  for (var i = 0; i < this.fingerCount; i++) {
     var fingerBody = new CANNON.RigidBody(5, new CANNON.Box(new CANNON.Vec3(2, 2, 2)));
     fingerBody.position.set(0, -100, 100 * (i + 1));
     self.world.add(fingerBody);
-    self.fingerBodies.push(fingerBody);
+    this.fingerBodies.push(fingerBody);
   }
-
-  self.step();
 };
 
-self.applyPressure = function() {
+Oppai.prototype.applyPressure = function() {
   var tkbIndex = 949;
-  self.oppaiGeometry.faces.forEach(function(face, i) {
-    var va = self.oppaiBodies[face.a];
-    var vb = self.oppaiBodies[face.b];
-    var vc = self.oppaiBodies[face.c];
+  this.oppaiGeometry.faces.forEach(function(face, i) {
+    var va = this.oppaiBodies[face.a];
+    var vb = this.oppaiBodies[face.b];
+    var vc = this.oppaiBodies[face.c];
     var pa = va.position;
     var pb = vb.position;
     var pc = vc.position;
@@ -92,42 +76,62 @@ self.applyPressure = function() {
     va.applyForce(force, va.position);
     vb.applyForce(force, vb.position);
     vc.applyForce(force, vc.position);
+  }.bind(this));
+};
+
+Oppai.prototype.step = function(dt) {
+  if (typeof(dt) === 'undefined') dt = 1/24;
+  this.applyPressure();
+  if (self.autoSwing) {
+    self.world.gravity.x = 0.5 * self.autoSwingSize * Math.cos(self.autoSwingCycle * 0.5);
+    self.world.gravity.z = self.autoSwingSize * Math.sin(self.autoSwingCycle);
+    self.autoSwingCycle += self.autoSwingStep / 180 * Math.PI;
+  }
+  self.world.step(dt);
+  self.postMessage({
+    id: this.id,
+    command:'step', 
+    oppaiPositions:this.oppaiBodies.map(function(body) {
+      return {
+        x:body.position.x - this.center.x, 
+        y:body.position.y - this.center.y,
+        z:body.position.z - this.center.z
+      };
+    }.bind(this)),
+    fingerPositions:this.fingerBodies.map(function(body) {
+      return {
+        x:body.position.x,
+        y:body.position.y,
+        z:body.position.z
+      };
+    }.bind(this))
   });
 };
 
-self.setPressure = function(data) {
-  self.pressure = data.pressure;
-};
-
-self.togglePressure = function() {
-  self.pressure = Math.pow(self.pressure - 1, 2);
-};
-
-self.shake = function() {
-  self.oppaiBodies.forEach(function(body) {
+Oppai.prototype.shake = function() {
+  this.oppaiBodies.forEach(function(body) {
     if (0 < body.position.x) {
       body.applyImpulse(new CANNON.Vec3(0, 1, 0).mult(body.position.x), body.position);
     }
   });
 };
 
-self.touch = function(data) {
-  var fingerIndex = typeof(data.index) === 'undefined' ? 0 : data.index;
-  var fingerBody = self.fingerBodies[fingerIndex];
+Oppai.prototype.touch = function(index) {
+  var fingerIndex = typeof(index) === 'undefined' ? 0 : index;
+  var fingerBody = this.fingerBodies[fingerIndex];
   fingerBody.position.set(
-    self.center.x + 25,
-    self.center.y + Math.random() * 16 - 8, 
-    self.center.z + Math.random() * 20 - 10
+    this.center.x + 25,
+    this.center.y + Math.random() * 16 - 8, 
+    this.center.z + Math.random() * 20 - 10
   );
   fingerBody.velocity.set(-50, 0, 0);
 };
 
-self.touchAt = function(data) {
-  var faces = data.faces;
+Oppai.prototype.touchAt = function(faces) {
   faces.forEach(function(face) {
-    var ba = self.oppaiBodies[face.a];
-    var bb = self.oppaiBodies[face.b];
-    var bc = self.oppaiBodies[face.c];
+    var ba = this.oppaiBodies[face.a];
+    var bb = this.oppaiBodies[face.b];
+    var bc = this.oppaiBodies[face.c];
 
     var force = 100;
     var targetPoint = new CANNON.Vec3(-3, 0, 0);
@@ -142,35 +146,74 @@ self.touchAt = function(data) {
     var dc = targetPoint.copy().vsub(bc.position);
     dc.normalize();
     bc.applyForce(dc.mult(force), bc.position);
-  });
+  }.bind(this));
+};
+
+self.oppais = {};
+
+self.autoSwing = true;
+self.autoSwingStep = 5;
+self.autoSwingSize = 2;
+self.autoSwingCycle = 0;
+self.pressure = 1; /* TODO */
+self.world = new CANNON.World();
+self.world.gravity.set(0,-9.82,0);
+self.world.broadphase = new CANNON.NaiveBroadphase();
+self.world.solver.iterations = 8; /* TODO */
+
+self.clamp = function(val, min, max) { return Math.max(max, Math.min(min, val)); };
+
+self.initialize = function(data) {
+  self.constructOppai(data);
+  self.step();
+};
+
+self.constructOppai = function(data) {
+  if (typeof(data.center) !== 'undefined') self.center = data.center;
+  self.oppais[data.id] = new Oppai(data.id, data.geometry, data.center, data.fingerCount);
+};
+
+self.setPressure = function(data) {
+  self.pressure = data.pressure;
+};
+
+self.togglePressure = function() {
+  self.pressure = Math.pow(self.pressure - 1, 2);
+};
+
+self.getOppaiById = function(id) {
+  var oppai = self.oppais[id];
+  if (typeof(oppai) === 'undefined') {
+    var nullFunc = function() {};
+    return {
+      shake: nullFunc,
+      touch: nullFunc,
+      touchAt: nullFunc
+    }
+  }
+  else {
+    return oppai;
+  }
+};
+
+self.shake = function(data) {
+  self.getOppaiById(data.id).shake();
+};
+
+self.touch = function(data) {
+  self.getOppaiById(data.id).touch(data.index);
+};
+
+self.touchAt = function(data) {
+  self.getOppaiById(data.id).touchAt(data.faces);
 };
 
 self.step = function(dt) {
   if (typeof(dt) === 'undefined') dt = 1/24;
-  self.applyPressure();
-  if (self.autoSwing) {
-    self.world.gravity.x = 0.5 * self.autoSwingSize * Math.cos(self.autoSwingCycle * 0.5);
-    self.world.gravity.z = self.autoSwingSize * Math.sin(self.autoSwingCycle);
-    self.autoSwingCycle += self.autoSwingStep / 180 * Math.PI;
+  for (var id in self.oppais) {
+    var oppai = self.oppais[id];
+    oppai.step(dt);
   }
-  self.world.step(dt);
-  self.postMessage({
-    command:'step', 
-    oppaiPositions:self.oppaiBodies.map(function(body) {
-      return {
-        x:body.position.x - self.center.x, 
-        y:body.position.y - self.center.y,
-        z:body.position.z - self.center.z
-      };
-    }.bind(this)),
-    fingerPositions:self.fingerBodies.map(function(body) {
-      return {
-        x:body.position.x,
-        y:body.position.y,
-        z:body.position.z
-      };
-    }.bind(this))
-  });
   setTimeout(self.step, 1/60*1000);
 };
 
@@ -179,6 +222,9 @@ self.addEventListener('message', function(event) {
   switch (data.command) {
     case 'initialize':
       self.initialize(data);
+      break;
+    case 'constructOppai':
+      self.constructOppai(data);
       break;
     case 'setPressure':
       self.setPressure(data);
