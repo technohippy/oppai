@@ -6,7 +6,11 @@ var Oppai = Oppai || {};
 var ua = navigator.userAgent.toLowerCase();
 Oppai.isSmartphone = (0 <= ua.indexOf('iphone') || 0 <= ua.indexOf('android'));
 
-Oppai.Oppai = function(center, cannonWorld) {
+Oppai.oppaiId = 1;
+
+Oppai.Oppai = function(center, worker) {
+  this.id = Oppai.oppaiId;
+  Oppai.oppaiId += 1;
   this.center = center || {x:0, y:0, z:0};
   this.threeGeometry = new THREE.IcosahedronGeometry(10, 3);
   this.threeGeometry.vertices.forEach(function(vertex, i) {
@@ -30,12 +34,18 @@ Oppai.Oppai = function(center, cannonWorld) {
     this.threeMesh.receiveShadow = true;
   }
   this.threeFingers = [];
-  this.setupWorker();
+  if (typeof(worker) === 'undefined') {
+    this.setupWorker();
+  }
+  else {
+    this.worker = worker;
+  }
 };
 
 Oppai.Oppai.prototype.setupWorker = function() {
   this.worker = new Worker('js/oppai_worker.js');
   this.worker.postMessage({
+    id: this.id,
     command:'initialize', 
     geometry:this.threeGeometry, 
     center:this.center
@@ -61,23 +71,40 @@ Oppai.Oppai.prototype.setupWorker = function() {
 };
 
 Oppai.Oppai.prototype.setPressure = function(pressure) {
-  this.worker.postMessage({command:'setPressure', pressure:pressure});
+  this.worker.postMessage({
+    id: this.id,
+    command:'setPressure', 
+    pressure:pressure
+  });
 };
 
 Oppai.Oppai.prototype.togglePressure = function() {
-  this.worker.postMessage({command:'togglePressure'});
+  this.worker.postMessage({
+    id: this.id,
+    command:'togglePressure'
+  });
 };
 
 Oppai.Oppai.prototype.touch = function() {
-  this.worker.postMessage({command:'touch'});
+  this.worker.postMessage({
+    id: this.id,
+    command:'touch'
+  });
 };
 
 Oppai.Oppai.prototype.touchAt = function(faces) {
-  this.worker.postMessage({command:'touchAt', faces:faces});
+  this.worker.postMessage({
+    id: this.id,
+    command:'touchAt', 
+    faces:faces
+  });
 };
 
 Oppai.Oppai.prototype.shake = function() {
-  this.worker.postMessage({command:'shake'});
+  this.worker.postMessage({
+    id: this.id,
+    command:'shake'
+  });
 };
 
 }).call(this, Oppai);

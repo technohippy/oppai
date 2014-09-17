@@ -48,7 +48,7 @@ document.body.appendChild(threeRenderer.domElement);
 var oppai, oppai2, hand, hand2;
 if (location.search === '?2') {
   oppai = new Oppai.Oppai(new THREE.Vector3(0, 0, -11));
-  oppai2 = new Oppai.Oppai(new THREE.Vector3(0, 0, 11), oppai.cannonWorld);
+  oppai2 = new Oppai.Oppai(new THREE.Vector3(0, 0, 11));
   hand = new Oppai.Hand(oppai, threeCamera, threeScene);
   hand2 = new Oppai.Hand(oppai2, threeCamera, threeScene);
   threeScene.add(oppai);

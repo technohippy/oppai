@@ -129,7 +129,7 @@ self.touchAt = function(data) {
     var bb = self.oppaiBodies[face.b];
     var bc = self.oppaiBodies[face.c];
 
-    var force = 200;
+    var force = 100;
     var targetPoint = new CANNON.Vec3(-3, 0, 0);
     var da = targetPoint.copy().vsub(ba.position);
     da.normalize();
