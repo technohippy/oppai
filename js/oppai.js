@@ -48,7 +48,8 @@ Oppai.Oppai.prototype.setupWorker = function(command) {
     id: this.id,
     command:command,
     geometry:this.threeGeometry, 
-    center:this.center
+    center:this.center,
+    //coreGeometry:new THREE.IcosahedronGeometry(9, 2)
   });
 
   this.worker.addEventListener('message', function(event) {

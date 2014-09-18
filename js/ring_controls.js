@@ -15,11 +15,11 @@ Oppai.RingControls = function(camera, center, lookAt, distance, initialAngle) {
     this.angle = initialAngle || 2 * Math.PI / 3;
   }
 
-  document.addEventListener('keypress', function(event) {
-    if (event.keyCode == 60/*<*/ || event.keyCode == 122/*z*/) {
+  document.addEventListener('keydown', function(event) {
+    if (event.keyCode == 39 || event.keyCode == 122) {
       this.angle -= Math.PI * 0.01;
     }
-    else if (event.keyCode == 62/*>*/ || event.keyCode == 99/*c*/) {
+    else if (event.keyCode == 37 || event.keyCode == 99) {
       this.angle += Math.PI * 0.01;
     }
   }.bind(this));

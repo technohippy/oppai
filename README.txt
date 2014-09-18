@@ -1,7 +1,7 @@
 http://technohippy.github.io/oppai/
 
-Space: throw a box
-Enter: shake
-<, z: rotate
->, c: rotate
-w: toggle wireframe
+Space Key: throw a box
+Enter Key: shake
+Left/Right Cursor Keys: rotate
+'z', 'c': rotate
+'w': toggle wireframe

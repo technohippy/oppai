@@ -64,7 +64,7 @@ else {
   threeScene.add(hand);
 }
 
-document.addEventListener('keypress', function(event) {
+document.addEventListener('keydown', function(event) {
   if (event.keyCode == 13/*enter*/) {
     oppai.shake();
     if (oppai2) oppai2.shake();

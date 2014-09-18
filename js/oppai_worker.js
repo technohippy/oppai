@@ -171,6 +171,12 @@ self.initialize = function(data) {
 self.constructOppai = function(data) {
   if (typeof(data.center) !== 'undefined') self.center = data.center;
   self.oppais[data.id] = new Oppai(data.id, data.geometry, data.center, data.fingerCount);
+
+  /*
+  var id = data.id + 10;
+  var center = {x:data.center.x, y:data.center.y - 0, z:data.center.z};
+  self.oppais[id] = new Oppai(id, data.coreGeometry, center, 0);
+  */
 };
 
 self.setPressure = function(data) {
@@ -219,29 +225,5 @@ self.step = function(dt) {
 
 self.addEventListener('message', function(event) {
   var data = event.data;
-  switch (data.command) {
-    case 'initialize':
-      self.initialize(data);
-      break;
-    case 'constructOppai':
-      self.constructOppai(data);
-      break;
-    case 'setPressure':
-      self.setPressure(data);
-      break;
-    case 'togglePressure':
-      self.togglePressure(data);
-      break;
-    case 'shake':
-      self.shake(data);
-      break;
-    case 'touch':
-      self.touch(data);
-      break;
-    case 'touchAt':
-      self.touchAt(data);
-      break;
-    default:
-      break;
-  }
+  self[data.command](data);
 });
