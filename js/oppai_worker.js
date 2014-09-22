@@ -20,7 +20,7 @@ function Oppai(id, geometry, center, fingerCount) {
     body.linearDamping = self.clamp(0.1 + 0.4 * (vertex.y - vertex.x + 10) / 30, 0.1, 0.5);
     this.oppaiBodies.push(body);
     self.world.add(body);
-  }.bind(this));
+  }, this);
 
   var connected = {};
   this.oppaiGeometry.faces.forEach(function(face, i) {
@@ -45,7 +45,7 @@ function Oppai(id, geometry, center, fingerCount) {
       connected[caKey] = true;
       self.world.addConstraint(new CANNON.DistanceConstraint(vc, va, caDist));
     }
-  }.bind(this));
+  }, this);
 
   for (var i = 0; i < this.fingerCount; i++) {
     var fingerBody = new CANNON.RigidBody(5, new CANNON.Box(new CANNON.Vec3(2, 2, 2)));
@@ -76,7 +76,7 @@ Oppai.prototype.applyPressure = function() {
     va.applyForce(force, va.position);
     vb.applyForce(force, vb.position);
     vc.applyForce(force, vc.position);
-  }.bind(this));
+  }, this);
 };
 
 Oppai.prototype.step = function(dt) {
@@ -97,14 +97,14 @@ Oppai.prototype.step = function(dt) {
         y:body.position.y - this.center.y,
         z:body.position.z - this.center.z
       };
-    }.bind(this)),
+    }, this),
     fingerPositions:this.fingerBodies.map(function(body) {
       return {
         x:body.position.x,
         y:body.position.y,
         z:body.position.z
       };
-    }.bind(this))
+    }, this)
   });
 };
 
@@ -146,7 +146,7 @@ Oppai.prototype.touchAt = function(faces) {
     var dc = targetPoint.copy().vsub(bc.position);
     dc.normalize();
     bc.applyForce(dc.mult(force), bc.position);
-  }.bind(this));
+  }, this);
 };
 
 self.oppais = {};

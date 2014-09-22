@@ -65,16 +65,16 @@ else {
 }
 
 document.addEventListener('keydown', function(event) {
-  if (event.keyCode == 13/*enter*/) {
+  if (event.keyCode === 13/*enter*/) {
     oppai.shake();
     if (oppai2) oppai2.shake();
   }
-  else if (event.keyCode == 119/*w*/) {
+  else if (event.keyCode === 87/*w*/) {
     oppai.threeMesh.material.wireframe = !oppai.threeMesh.material.wireframe;
     if (oppai2) oppai2.threeMesh.material.wireframe = !oppai2.threeMesh.material.wireframe;
 //    hand.threeFinger.material.wireframe = !hand.threeFinger.material.wireframe;
   }
-  else if (event.keyCode == 120/*x*/) {
+  else if (event.keyCode === 88/*x*/) {
     oppai.togglePressure();
     if (oppai2) oppai2.togglePressure();
   }

@@ -17,7 +17,7 @@ Oppai.Oppai = function(center, worker) {
     var yDia = vertex.y - this.center.y;
     if (0 < yDia) vertex.y = yDia * 1.3 + this.center.y;
     if (vertex.x < -1) vertex.x = -1;
-  }.bind(this));
+  }, this);
   this.threeGeometry.verticesNeedUpdate = true;
   this.threeGeometry.computeFaceNormals();
   this.threeGeometry.computeVertexNormals();
@@ -58,7 +58,7 @@ Oppai.Oppai.prototype.setupWorker = function(command) {
     var oppaiPoisitions = event.data.oppaiPositions;
     oppaiPoisitions.forEach(function(position, i) {
       this.threeGeometry.vertices[i].set(position.x, position.y, position.z);
-    }.bind(this));
+    }, this);
     this.threeGeometry.verticesNeedUpdate = true;
     this.threeGeometry.computeFaceNormals();
     this.threeGeometry.computeVertexNormals();
@@ -70,7 +70,7 @@ Oppai.Oppai.prototype.setupWorker = function(command) {
         finger.position.copy(position);
 //        finger.quaternion.copy(quaternion);
       }
-    }.bind(this));
+    }, this);
   }.bind(this));
 };
 
