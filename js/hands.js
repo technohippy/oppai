@@ -68,10 +68,12 @@ Oppai.Hand = function(oppai, camera, scene) {
 Oppai.Hand.prototype.touchAt = function(x, y) {
   var ray = this.projector.pickingRay(new THREE.Vector3(x, y, -1), this.camera);
   var intersects = ray.intersectObject(this.oppai.threeMesh); // TODO
+  if (intersects.length == 0) return;
   if (2 < intersects.length) intersects = intersects.slice(0, 2);
-  this.oppai.touchAt(intersects.map(function(intersect) {
-    return intersect.face;
-  }));
+  this.oppai.touchAt(
+    intersects[0].point, 
+    intersects.map(function(intersect) { return intersect.face })
+  );
 };
 
 Oppai.Hand.prototype.touch = function() {

@@ -22,9 +22,8 @@ Oppai.Oppai = function(center, worker) {
   this.threeGeometry.computeFaceNormals();
   this.threeGeometry.computeVertexNormals();
   var material = new THREE.MeshPhongMaterial({
-    color: 0xffccaa
-    , emissive: 0x0f0603
-    //,wireframe: true
+    color: 0xffccaa, emissive: 0x0f0603
+//    ,wireframe: true
   });
   this.threeMesh = new THREE.Mesh(this.threeGeometry, material);
   this.threeMesh.position.copy(this.center);
@@ -63,14 +62,16 @@ Oppai.Oppai.prototype.setupWorker = function(command) {
     this.threeGeometry.computeFaceNormals();
     this.threeGeometry.computeVertexNormals();
 
-    var fingerPositions = event.data.fingerPositions;
-    fingerPositions.forEach(function(position, i) {
-      var finger = this.threeFingers[i];
-      if (typeof(finger) !== 'undefined') {
-        finger.position.copy(position);
-//        finger.quaternion.copy(quaternion);
-      }
-    }, this);
+    if (event.data.showFingers) {
+      var fingerPositions = event.data.fingerPositions;
+      fingerPositions.forEach(function(position, i) {
+        var finger = this.threeFingers[i];
+        if (typeof(finger) !== 'undefined') {
+          finger.position.copy(position);
+//          finger.quaternion.copy(quaternion);
+        }
+      }, this);
+    }
   }.bind(this));
 };
 
@@ -96,10 +97,11 @@ Oppai.Oppai.prototype.touch = function() {
   });
 };
 
-Oppai.Oppai.prototype.touchAt = function(faces) {
+Oppai.Oppai.prototype.touchAt = function(point, faces) {
   this.worker.postMessage({
     id: this.id,
     command:'touchAt', 
+    point:point,
     faces:faces
   });
 };

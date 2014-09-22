@@ -7,12 +7,13 @@ Oppai.RingControls = function(camera, center, lookAt, distance, initialAngle) {
   this.camera = camera;
   this.center = center || new THREE.Vector3(0, 0, 0);
   this.lookAt = lookAt || this.center;
-  this.distance = distance || 30;
   if (Oppai.isSmartphone) {
-    this.angle = initialAngle || 9 * Math.PI / 10;
+    this.distance = distance || 50;
+    this.angle = initialAngle || 2 * Math.PI / 3;
   }
   else {
-    this.angle = initialAngle || 2 * Math.PI / 3;
+    this.distance = distance || 30;
+    this.angle = initialAngle || Math.PI / 2;
   }
 
   document.addEventListener('keydown', function(event) {
@@ -21,6 +22,12 @@ Oppai.RingControls = function(camera, center, lookAt, distance, initialAngle) {
     }
     else if (event.keyCode == 37 || event.keyCode == 99) {
       this.angle += Math.PI * 0.01;
+    }
+    else if (event.keyCode == 38) {
+      this.distance -= 0.5;
+    }
+    else if (event.keyCode == 40) {
+      this.distance += 0.5;
     }
   }.bind(this));
 };

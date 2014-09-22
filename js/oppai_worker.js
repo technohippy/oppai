@@ -4,9 +4,12 @@ function Oppai(id, geometry, center, fingerCount) {
   this.id = id;
   this.oppaiGeometry = geometry;
   this.center = typeof(center) === 'undefined' ? {x:0, y:0, z:0} : center;
-  this.fingerCount = typeof(fingerCount) === 'undefined' ? 1 : fingerCount;
+//  this.fingerCount = typeof(fingerCount) === 'undefined' ? 1 : fingerCount;
+  this.fingerCount = typeof(fingerCount) === 'undefined' ? 5 : fingerCount;
   this.oppaiBodies = [];
   this.fingerBodies = [];
+  this.showFingers = true;
+  this.currentFingerIndex = 0;
 
   var mass = 0.5;
   var len = 0.03;
@@ -17,7 +20,7 @@ function Oppai(id, geometry, center, fingerCount) {
       new CANNON.Box(new CANNON.Vec3(len, len, len))
     );
     body.position.set(vertex.x, vertex.y, vertex.z); // TODO: copy?
-    body.linearDamping = self.clamp(0.1 + 0.4 * (vertex.y - vertex.x + 10) / 30, 0.1, 0.5);
+    body.linearDamping = self.clamp(0.1 + 0.6 * (vertex.y - vertex.x + 10) / 30, 0.1, 0.7);
     this.oppaiBodies.push(body);
     self.world.add(body);
   }, this);
@@ -47,8 +50,11 @@ function Oppai(id, geometry, center, fingerCount) {
     }
   }, this);
 
+  var fingerMaterial = new CANNON.Material('fingerMaterial');
+//  self.world.addContactMaterial(new CANNON.ContactMaterial(fingerMaterial, fingerMaterial, {
+//  }));
   for (var i = 0; i < this.fingerCount; i++) {
-    var fingerBody = new CANNON.RigidBody(5, new CANNON.Box(new CANNON.Vec3(2, 2, 2)));
+    var fingerBody = new CANNON.RigidBody(5, new CANNON.Box(new CANNON.Vec3(2, 2, 2)), fingerMaterial);
     fingerBody.position.set(0, -100, 100 * (i + 1));
     self.world.add(fingerBody);
     this.fingerBodies.push(fingerBody);
@@ -98,6 +104,7 @@ Oppai.prototype.step = function(dt) {
         z:body.position.z - this.center.z
       };
     }, this),
+    showFingers:this.showFingers,
     fingerPositions:this.fingerBodies.map(function(body) {
       return {
         x:body.position.x,
@@ -117,6 +124,7 @@ Oppai.prototype.shake = function() {
 };
 
 Oppai.prototype.touch = function(index) {
+  this.showFingers = true;
   var fingerIndex = typeof(index) === 'undefined' ? 0 : index;
   var fingerBody = this.fingerBodies[fingerIndex];
   fingerBody.position.set(
@@ -127,7 +135,33 @@ Oppai.prototype.touch = function(index) {
   fingerBody.velocity.set(-50, 0, 0);
 };
 
-Oppai.prototype.touchAt = function(faces) {
+Oppai.prototype.touchAt = function(center, faces) {
+  this.showFingers = false;
+  var face = faces[0];
+  if (typeof(face) === 'undefined') return;
+
+  var relativePosition = new CANNON.Vec3(
+    face.normal.x,
+    face.normal.y,
+    face.normal.z
+  ).mult(3);
+  var position = new CANNON.Vec3(
+    center.x + relativePosition.x,
+    center.y + relativePosition.y,
+    center.z + relativePosition.z
+  );
+  var velocity = new CANNON.Vec3(
+    -face.normal.x,
+    -face.normal.y,
+    -face.normal.z
+  ).mult(10);
+  var fingerBody = this.fingerBodies[this.currentFingerIndex];
+  this.currentFingerIndex = (this.currentFingerIndex + 1) % this.fingerBodies.length;
+  fingerBody.position.set(position.x, position.y, position.z);
+  fingerBody.velocity.set(velocity.x, velocity.y, velocity.z);
+};
+
+Oppai.prototype.deprecatdTouchAt = function(center, faces) {
   faces.forEach(function(face) {
     var ba = this.oppaiBodies[face.a];
     var bb = this.oppaiBodies[face.b];
@@ -211,7 +245,7 @@ self.touch = function(data) {
 };
 
 self.touchAt = function(data) {
-  self.getOppaiById(data.id).touchAt(data.faces);
+  self.getOppaiById(data.id).touchAt(data.point, data.faces);
 };
 
 self.step = function(dt) {
