@@ -22,8 +22,7 @@ Oppai.Oppai = function(center, worker) {
   this.threeGeometry.computeFaceNormals();
   this.threeGeometry.computeVertexNormals();
   var material = new THREE.MeshPhongMaterial({
-    color: 0xffccaa, emissive: 0x0f0603
-//    ,wireframe: true
+    color: 0xffccaa, emissive: 0x0f0603, wireframe: Oppai.isSmartphone
   });
   this.threeMesh = new THREE.Mesh(this.threeGeometry, material);
   this.threeMesh.position.copy(this.center);
