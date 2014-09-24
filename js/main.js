@@ -2,8 +2,10 @@
 //"use strict";
 
 function constructSpotLight() {
-  var light = new THREE.SpotLight(0xffffff, 6, 40, Math.PI*3/4, 0.1);
+  var light = new THREE.SpotLight(0xffffff, 4, 40, Math.PI*3/4, 0.1);
   light.position.set(30, 20, 0);
+//  var light = new THREE.SpotLight(0xffffff, 1, 40, Math.PI*3/4, 0.1);
+//  light.position.set(15, 10, 0);
   light.target.position = new THREE.Vector3();
   light.castShadow = true;
   return light;

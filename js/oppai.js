@@ -71,6 +71,11 @@ Oppai.Oppai.prototype.setupWorker = function(command) {
         }
       }, this);
     }
+    else {
+      this.threeFingers.forEach(function(finger, i) {
+        finger.position.set(-1000, 0, 0);
+      }, this);
+    }
   }.bind(this));
 };
 
