@@ -47,8 +47,6 @@ function constructRenderer() {
 var threeScene = new THREE.Scene();
 threeScene.add(constructSpotLight());
 threeScene.add(constructDirectionalLight(new THREE.Vector3(0.3, -1, 0), 0x333333));
-//threeScene.add(constructDirectionalLight(new THREE.Vector3(0.7, 1, -1), 0xffffff));
-//threeScene.add(constructDirectionalLight(new THREE.Vector3(-0.3, -1, 1), 0x666666));
 threeScene.add(new THREE.AmbientLight(0x0f0603));
 
 var threeCamera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight);
@@ -98,7 +96,6 @@ document.addEventListener('keydown', function(event) {
   else if (event.keyCode === 87/*w*/) {
     oppai.threeMesh.material.wireframe = !oppai.threeMesh.material.wireframe;
     if (oppai2) oppai2.threeMesh.material.wireframe = !oppai2.threeMesh.material.wireframe;
-//    hand.threeFinger.material.wireframe = !hand.threeFinger.material.wireframe;
   }
   else if (event.keyCode === 88/*x*/) {
     oppai.togglePressure();

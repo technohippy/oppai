@@ -30,7 +30,8 @@ Oppai.Oppai = function(center, worker) {
 //    this.threeMesh.castShadow = true;
     this.threeMesh.receiveShadow = true;
   }
-//  this.coreMesh = new THREE.Mesh(new THREE.SphereGeometry(7.2, 16, 16), material);
+//  this.coreGeometry = new THREE.IcosahedronGeometry(7.2, 2)
+//  this.coreMesh = new THREE.Mesh(this.coreGeometry, material);
   this.threeFingers = [];
   if (typeof(worker) === 'undefined') {
     this.worker = new Worker('js/oppai_worker.js');
@@ -44,11 +45,11 @@ Oppai.Oppai = function(center, worker) {
 
 Oppai.Oppai.prototype.setupWorker = function(command) {
   this.worker.postMessage({
-    id: this.id,
+    id:this.id,
     command:command,
     geometry:this.threeGeometry, 
     center:this.center,
-    //coreGeometry:new THREE.IcosahedronGeometry(9, 2)
+    coreGeometry:this.coreGeometry
   });
 
   this.worker.addEventListener('message', function(event) {
@@ -58,13 +59,32 @@ Oppai.Oppai.prototype.setupWorker = function(command) {
     oppaiPoisitions.forEach(function(position, i) {
       this.threeGeometry.vertices[i].set(position.x, position.y, position.z);
     }, this);
+//    this.threeGeometry.dynamic = true;
     this.threeGeometry.verticesNeedUpdate = true;
-    this.threeGeometry.computeFaceNormals();
-    this.threeGeometry.computeVertexNormals();
+//    this.threeGeometry.uvsNeedUpdate = true;
+//    this.threeGeometry.computeFaceNormals();
+//    this.threeGeometry.computeVertexNormals();
+//    this.threeGeometry.computeTangents();
 
-    if (this.coreMesh) {
-      var core = event.data.core;
-      this.coreMesh.position.set(core.x, core.y, core.z);
+//this.threeGeometry.uvsNeedUpdate = true;
+//this.threeGeometry.normalsNeedUpdate = true;
+this.threeGeometry.tangentsNeedUpdate = true;
+//this.threeGeometry.colorsNeedUpdate = true;
+//this.threeGeometry.lineDistancesNeedUpdate = true;
+
+	this.buffersNeedUpdate = false;
+	this.groupsNeedUpdate = false;
+
+    if (typeof(this.coreGeometry) !== 'undefined') {
+      var corePositions = event.data.corePositions;
+      oppaiPoisitions.forEach(function(position, i) {
+        if (this.coreGeometry.vertices[i]) {
+          this.coreGeometry.vertices[i].set(position.x, position.y, position.z);
+        }
+      }, this);
+      this.coreGeometry.verticesNeedUpdate = true;
+//      this.coreGeometry.computeFaceNormals();
+//      this.coreGeometry.computeVertexNormals();
     }
 
     if (event.data.showFingers) {

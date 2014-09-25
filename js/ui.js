@@ -14,13 +14,27 @@ document.getElementById('sidebar-button').addEventListener(clickEvent(), functio
 });
 document.getElementById('plane-button').addEventListener(clickEvent(), function(event) {
   oppai.threeMesh.material.wireframe = false;
-  if (oppai2) oppai2.threeMesh.material.wireframe = false;
-  hand.threeFinger.material.wireframe = false;
+  oppai.threeFingers.forEach(function(finger, i) {
+    finger.material.wireframe = false;
+  }, this);
+  if (oppai2) {
+    oppai2.threeMesh.material.wireframe = false;
+    oppai2.threeFingers.forEach(function(finger, i) {
+      finger.material.wireframe = false;
+    }, this);
+  }
 });
 document.getElementById('mesh-button').addEventListener(clickEvent(), function(event) {
   oppai.threeMesh.material.wireframe = true;
-  if (oppai2) oppai2.threeMesh.material.wireframe = true;
-  hand.threeFinger.material.wireframe = true;
+  oppai.threeFingers.forEach(function(finger, i) {
+    finger.material.wireframe = true;
+  }, this);
+  if (oppai2) {
+    oppai2.threeMesh.material.wireframe = true;
+    oppai2.threeFingers.forEach(function(finger, i) {
+      finger.material.wireframe = true;
+    }, this);
+  }
 });
 document.getElementById('turn-right-button').addEventListener(clickEvent(), function(event) {
   controls.angle -= Math.PI * 0.01;
