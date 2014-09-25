@@ -4,7 +4,6 @@ function Oppai(id, geometry, center, fingerCount) {
   this.id = id;
   this.oppaiGeometry = geometry;
   this.center = typeof(center) === 'undefined' ? {x:0, y:0, z:0} : center;
-//  this.fingerCount = typeof(fingerCount) === 'undefined' ? 1 : fingerCount;
   this.fingerCount = typeof(fingerCount) === 'undefined' ? 5 : fingerCount;
   this.oppaiBodies = [];
   this.fingerBodies = [];
@@ -16,7 +15,7 @@ function Oppai(id, geometry, center, fingerCount) {
   this.oppaiGeometry.vertices.forEach(function(vertex, i) {
     vertex = new CANNON.Vec3(vertex.x + this.center.x, vertex.y + this.center.y, vertex.z + this.center.z);
     var body = new CANNON.RigidBody(
-      vertex.x < 0 ? 0 : mass, 
+      vertex.x < 0 && 9 < vertex.distanceTo(this.center) ? 0 : mass, 
       new CANNON.Box(new CANNON.Vec3(len, len, len))
     );
     body.position.set(vertex.x, vertex.y, vertex.z); // TODO: copy?
@@ -24,6 +23,11 @@ function Oppai(id, geometry, center, fingerCount) {
     this.oppaiBodies.push(body);
     self.world.add(body);
   }, this);
+
+  var coreShape = new CANNON.Sphere(7.2);
+  this.core = new CANNON.RigidBody(10, coreShape);
+  this.core.position.set(this.center.x, this.center.y, this.center.z);
+  self.world.add(this.core);
 
   var connected = {};
   this.oppaiGeometry.faces.forEach(function(face, i) {
@@ -97,6 +101,11 @@ Oppai.prototype.step = function(dt) {
   self.postMessage({
     id: this.id,
     command:'step', 
+    core:{
+      x:this.core.position.x,// - this.center.x,
+      y:this.core.position.y,// - this.center.y,
+      z:this.core.position.z// - this.center.z
+    },
     oppaiPositions:this.oppaiBodies.map(function(body) {
       return {
         x:body.position.x - this.center.x, 

@@ -30,6 +30,7 @@ Oppai.Oppai = function(center, worker) {
 //    this.threeMesh.castShadow = true;
     this.threeMesh.receiveShadow = true;
   }
+//  this.coreMesh = new THREE.Mesh(new THREE.SphereGeometry(7.2, 16, 16), material);
   this.threeFingers = [];
   if (typeof(worker) === 'undefined') {
     this.worker = new Worker('js/oppai_worker.js');
@@ -60,6 +61,11 @@ Oppai.Oppai.prototype.setupWorker = function(command) {
     this.threeGeometry.verticesNeedUpdate = true;
     this.threeGeometry.computeFaceNormals();
     this.threeGeometry.computeVertexNormals();
+
+    if (this.coreMesh) {
+      var core = event.data.core;
+      this.coreMesh.position.set(core.x, core.y, core.z);
+    }
 
     if (event.data.showFingers) {
       var fingerPositions = event.data.fingerPositions;
