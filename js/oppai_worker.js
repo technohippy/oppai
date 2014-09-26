@@ -57,7 +57,7 @@ function Oppai(id, geometry, center, fingerCount, isCore) {
 //  self.world.addContactMaterial(new CANNON.ContactMaterial(fingerMaterial, fingerMaterial, {
 //  }));
   for (var i = 0; i < this.fingerCount; i++) {
-    var fingerBody = new CANNON.RigidBody(8-1.5*i, new CANNON.Box(new CANNON.Vec3(2, 2, 2)), fingerMaterial);
+    var fingerBody = new CANNON.RigidBody(5-0.8*i, new CANNON.Box(new CANNON.Vec3(2, 2, 2)), fingerMaterial);
     fingerBody.position.set(0, -100, 100 * (i + 1));
     self.world.add(fingerBody);
     this.fingerBodies.push(fingerBody);
