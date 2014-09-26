@@ -17,7 +17,8 @@ function Oppai(id, geometry, center, fingerCount, isCore) {
   this.oppaiGeometry.vertices.forEach(function(vertex, i) {
     vertex = new CANNON.Vec3(vertex.x + this.center.x, vertex.y + this.center.y, vertex.z + this.center.z);
     var body = new CANNON.RigidBody(
-      !this.isCore && vertex.x < 0 && 9 < vertex.distanceTo(this.center) ? 0 : mass, 
+      //!this.isCore && vertex.x < 0 && 9 < vertex.distanceTo(this.center) ? 0 : mass, 
+      !this.isCore && vertex.x < 0 ? 0 : mass, 
       new CANNON.Box(new CANNON.Vec3(len, len, len))
     );
     body.position.set(vertex.x, vertex.y, vertex.z); // TODO: copy?

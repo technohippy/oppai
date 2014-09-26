@@ -4,10 +4,12 @@
 function constructSpotLight() {
   var light = new THREE.SpotLight(0xffffff, 4, 40, Math.PI*3/4, 0.1);
   light.position.set(30, 20, 0);
-//  var light = new THREE.SpotLight(0xffffff, 1, 40, Math.PI*3/4, 0.1);
-//  light.position.set(15, 10, 0);
   light.target.position = new THREE.Vector3();
   light.castShadow = true;
+  light.shadowDarkness = 0.3;
+  light.shadowCameraNear = 20;
+  light.shadowCameraFar = 50;
+  //light.shadowCameraVisible = true;
   return light;
 }
 
@@ -16,6 +18,7 @@ function constructDirectionalLight(direction, color) {
   if (typeof(color) === 'undefined') color = 0xffffff;
   var threeLight = new THREE.DirectionalLight(color);
   threeLight.position = direction;
+/*
   if (!Oppai.isSmartphone) {
     threeLight.castShadow = true;
     threeLight.shadowBias = 0.001;
@@ -29,6 +32,7 @@ function constructDirectionalLight(direction, color) {
     threeLight.shadowMapHeight = 3072;
     //threeLight.shadowCameraVisible = true;
   }
+*/
   return threeLight;
 }
 
@@ -46,7 +50,8 @@ function constructRenderer() {
 
 var threeScene = new THREE.Scene();
 threeScene.add(constructSpotLight());
-threeScene.add(constructDirectionalLight(new THREE.Vector3(0.3, -1, 0), 0x333333));
+//threeScene.add(constructDirectionalLight(new THREE.Vector3(0.3, -1, 0), 0x333333));
+threeScene.add(constructDirectionalLight(new THREE.Vector3(0.3, -1, 0), 0x443333));
 threeScene.add(new THREE.AmbientLight(0x0f0603));
 
 var threeCamera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight);
