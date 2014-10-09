@@ -54,8 +54,6 @@ Oppai.Oppai = function(center, worker) {
 };
 
 Oppai.Oppai.prototype.setupPalm = function() {
-  if (typeof(this.palm) !== 'undefined') return;
-
   this.palm = new Oppai.Palm(this.center);
   this.worker.postMessage({
     id:this.id,

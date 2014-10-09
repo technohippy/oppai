@@ -45,6 +45,8 @@ function constructRenderer() {
 }
 
 function startPalm(threeScene, opi, opi2) {
+  if (typeof(opi.palm) !== 'undefined') return;
+
   opi.setupPalm();
   threeScene.add(opi.palm);
   if (opi2) {
