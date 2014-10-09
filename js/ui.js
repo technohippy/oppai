@@ -64,3 +64,6 @@ document.getElementById('deflate-button').addEventListener(clickEvent(), functio
   oppai.setPressure(0);
   if (oppai2) oppai2.setPressure(0);
 });
+document.getElementById('webcam-button').addEventListener(clickEvent(), function(event) {
+  startPalm(threeScene, oppai, oppai2);
+});

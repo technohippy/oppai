@@ -12,6 +12,7 @@ Oppai.Oppai = function(center, worker) {
   this.id = Oppai.oppaiId;
   Oppai.oppaiId += 1;
   this.center = center || {x:0, y:0, z:0};
+
   this.threeGeometry = new THREE.IcosahedronGeometry(10, 3);
   this.threeGeometry.vertices.forEach(function(vertex, i) {
     var yDia = vertex.y - this.center.y;
@@ -22,7 +23,10 @@ Oppai.Oppai = function(center, worker) {
   this.threeGeometry.computeFaceNormals();
   this.threeGeometry.computeVertexNormals();
   var material = new THREE.MeshPhongMaterial({
-    color: 0xffccaa, emissive: 0x0f0603, wireframe: Oppai.isSmartphone
+    color: 0xffccaa, 
+//    emissive: 0x0f0603,
+    wireframeLinewidth: 1,
+    wireframe: Oppai.isSmartphone || true
   });
   this.threeMesh = new THREE.Mesh(this.threeGeometry, material);
   this.threeMesh.position.copy(this.center);
@@ -30,9 +34,15 @@ Oppai.Oppai = function(center, worker) {
 //    this.threeMesh.castShadow = true;
     this.threeMesh.receiveShadow = true;
   }
+
 //  this.coreGeometry = new THREE.IcosahedronGeometry(7.2, 2)
 //  this.coreMesh = new THREE.Mesh(this.coreGeometry, material);
+
   this.threeFingers = [];
+
+//  this.tkbLight = new THREE.PointLight(0xff0000, 50, 5);
+//  this.tkbLight.position.z += 100; // out of view
+
   if (typeof(worker) === 'undefined') {
     this.worker = new Worker('js/oppai_worker.js');
     this.setupWorker('initialize');
@@ -43,13 +53,23 @@ Oppai.Oppai = function(center, worker) {
   }
 };
 
+Oppai.Oppai.prototype.setupPalm = function() {
+  this.palm = new Oppai.Palm(this.center);
+  this.worker.postMessage({
+    id:this.id,
+    command:'setupPalm'
+  });
+};
+
 Oppai.Oppai.prototype.setupWorker = function(command) {
   this.worker.postMessage({
     id:this.id,
     command:command,
     geometry:this.threeGeometry, 
     center:this.center,
-    coreGeometry:this.coreGeometry
+    coreGeometry:this.coreGeometry,
+    handGeometries:this.handGeometries,
+    handPositions:this.handPositions
   });
 
   this.worker.addEventListener('message', function(event) {
@@ -59,21 +79,7 @@ Oppai.Oppai.prototype.setupWorker = function(command) {
     oppaiPoisitions.forEach(function(position, i) {
       this.threeGeometry.vertices[i].set(position.x, position.y, position.z);
     }, this);
-//    this.threeGeometry.dynamic = true;
     this.threeGeometry.verticesNeedUpdate = true;
-//    this.threeGeometry.uvsNeedUpdate = true;
-//    this.threeGeometry.computeFaceNormals();
-//    this.threeGeometry.computeVertexNormals();
-//    this.threeGeometry.computeTangents();
-
-//this.threeGeometry.uvsNeedUpdate = true;
-//this.threeGeometry.normalsNeedUpdate = true;
-this.threeGeometry.tangentsNeedUpdate = true;
-//this.threeGeometry.colorsNeedUpdate = true;
-//this.threeGeometry.lineDistancesNeedUpdate = true;
-
-	this.buffersNeedUpdate = false;
-	this.groupsNeedUpdate = false;
 
     if (typeof(this.coreGeometry) !== 'undefined') {
       var corePositions = event.data.corePositions;
@@ -83,8 +89,6 @@ this.threeGeometry.tangentsNeedUpdate = true;
         }
       }, this);
       this.coreGeometry.verticesNeedUpdate = true;
-//      this.coreGeometry.computeFaceNormals();
-//      this.coreGeometry.computeVertexNormals();
     }
 
     if (event.data.showFingers) {
@@ -102,6 +106,21 @@ this.threeGeometry.tangentsNeedUpdate = true;
         finger.position.set(-1000, 0, 0);
       }, this);
     }
+
+    if (this.palm && event.data.handPositions) {
+      var p = event.data.handPositions.hand;
+      this.palm.threeMesh.position.set(p.x, p.y, p.z);
+    }
+
+    if (this.tkbLight) {
+      var f = this.threeGeometry.faces[949];
+      var p = this.threeGeometry.vertices[f.a].clone();
+      p.x += this.center.x;
+      p.y += this.center.y;
+      p.z += this.center.z;
+      p.x += 0.03;
+      this.tkbLight.position.copy(p);
+    }
   }.bind(this));
 };
 
@@ -117,6 +136,16 @@ Oppai.Oppai.prototype.togglePressure = function() {
   this.worker.postMessage({
     id: this.id,
     command:'togglePressure'
+  });
+};
+
+Oppai.Oppai.prototype.moveHand = function(dx, dy, dz) {
+  this.worker.postMessage({
+    id: this.id,
+    command: 'moveHand',
+    dx: dx,
+    dy: dy,
+    dz: dz
   });
 };
 
@@ -140,6 +169,14 @@ Oppai.Oppai.prototype.shake = function() {
   this.worker.postMessage({
     id: this.id,
     command:'shake'
+  });
+};
+
+Oppai.Oppai.prototype.movePalm = function(point) {
+  this.worker.postMessage({
+    id: this.id,
+    command:'movePalm', 
+    point:point
   });
 };
 

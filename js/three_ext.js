@@ -4,9 +4,18 @@ THREE.Scene.prototype.add = function(object) {
     if (object.coreMesh) {
       this.add(object.coreMesh);
     }
+    if (object.tkbLight) {
+      this.add(object.tkbLight);
+    }
+    if (object.palm) {
+      this.add(object.palm);
+    }
   }
   else if (object instanceof Oppai.Hand) {
     this.add(object.threeFinger);
+  }
+  else if (object instanceof Oppai.Palm) {
+    this.add(object.threeMesh);
   }
   else {
     THREE.Object3D.prototype.add.call(this, object);

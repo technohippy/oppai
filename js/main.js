@@ -2,13 +2,17 @@
 //"use strict";
 
 function constructSpotLight() {
-  var light = new THREE.SpotLight(0xffffff, 4, 40, Math.PI*3/4, 0.1);
-  light.position.set(30, 20, 0);
+  //var light = new THREE.SpotLight(0xffffff, 3, 100, Math.PI*3/4, 0.1);
+  var light = new THREE.SpotLight(0xffffff, 3, 110, Math.PI*3/4, 0.1);
+  light.position.set(60, 40, 0);
+  //light.position.set(60, 40, 30);
   light.target.position = new THREE.Vector3();
   light.castShadow = true;
   light.shadowDarkness = 0.3;
-  light.shadowCameraNear = 20;
-  light.shadowCameraFar = 50;
+  light.shadowCameraNear = 50;
+  light.shadowCameraFar = 100;
+  light.shadowMapWidth = 1024;
+  light.shadowMapHeight = 1024;
   //light.shadowCameraVisible = true;
   return light;
 }
@@ -18,22 +22,14 @@ function constructDirectionalLight(direction, color) {
   if (typeof(color) === 'undefined') color = 0xffffff;
   var threeLight = new THREE.DirectionalLight(color);
   threeLight.position = direction;
-/*
-  if (!Oppai.isSmartphone) {
-    threeLight.castShadow = true;
-    threeLight.shadowBias = 0.001;
-    threeLight.shadowCameraNear = -100;
-    threeLight.shadowCameraFar = 100;
-    threeLight.shadowCameraLeft = -100;
-    threeLight.shadowCameraRight = 100;
-    threeLight.shadowCameraTop = 100;
-    threeLight.shadowCameraBottom = -100;
-    threeLight.shadowMapWidth = 3072;
-    threeLight.shadowMapHeight = 3072;
-    //threeLight.shadowCameraVisible = true;
-  }
-*/
   return threeLight;
+}
+
+function constructPointLight() {
+  var light = new THREE.PointLight(0xffffff, 5, 10);
+  light.position.x += 10;
+  light.position.y += 10;
+  return light;
 }
 
 function constructRenderer() {
@@ -48,10 +44,37 @@ function constructRenderer() {
   return threeRenderer;
 }
 
+function startPalm(threeScene, opi, opi2) {
+  opi.setupPalm();
+  threeScene.add(opi.palm);
+  if (opi2) {
+    opi2.setupPalm();
+    threeScene.add(opi2.palm);
+  }
+
+  var detector = new Detector();
+  detector.addDetectHandler(function(data, gc) {
+    if (data.redPoints.size < 10) return;
+
+    var center = data.redPoints.centerAverage;
+    var dx = center.x / Detector.DEFAULT_WIDTH - 0.5;
+    var dy = center.y / Detector.DEFAULT_HEIGHT - 0.5;
+
+    var x = 15 - (data.redPoints.size - 10) / 150;
+    var y = -dy * 15 - 2;
+    var z = dx * 15;
+    opi.movePalm({x:x, y:y, z:z});
+    if (opi2) opi2.movePalm({x:x, y:y, z:z});
+  });
+  detector.start();
+  detector.detect();
+}
+
 var threeScene = new THREE.Scene();
 threeScene.add(constructSpotLight());
 //threeScene.add(constructDirectionalLight(new THREE.Vector3(0.3, -1, 0), 0x333333));
 threeScene.add(constructDirectionalLight(new THREE.Vector3(0.3, -1, 0), 0x443333));
+//threeScene.add(constructPointLight());
 threeScene.add(new THREE.AmbientLight(0x0f0603));
 
 var threeCamera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight);
@@ -79,20 +102,6 @@ else {
   threeScene.add(hand2);
 }
 
-/*
-var bodyGeometry = new THREE.IcosahedronGeometry(20, 3);
-bodyGeometry.vertices.forEach(function(vertex, i) {
-  if (15 < vertex.y) vertex.y = 15;
-  if (vertex.y < -15) vertex.y = -15;
-  vertex.z *= 1.3;
-  vertex.x *= 0.5;
-});
-var body = new THREE.Mesh(bodyGeometry, oppai.threeMesh.material);
-body.position.x -= 8;
-body.receiveShadow = true;
-threeScene.add(body);
-*/
-
 document.addEventListener('keydown', function(event) {
   if (event.keyCode === 13/*enter*/) {
     oppai.shake();
@@ -105,6 +114,33 @@ document.addEventListener('keydown', function(event) {
   else if (event.keyCode === 88/*x*/) {
     oppai.togglePressure();
     if (oppai2) oppai2.togglePressure();
+  }
+  else if (event.keyCode === 70/*f*/) {
+    oppai.moveHand(-0.1, 0, 0);
+    if (oppai2) oppai2.moveHand(-0.1, 0, 0);
+  }
+  else if (event.keyCode === 66/*b*/) {
+    oppai.moveHand(0.1, 0, 0);
+    if (oppai2) oppai2.moveHand(0.1, 0, 0);
+  }
+  else if (event.shiftKey) {
+    // cursor keys
+    if (event.keyCode === 37) {
+      oppai.moveHand(0, 0, 0.1);
+      if (oppai2) oppai2.moveHand(0, 0, 0.1);
+    }
+    else if (event.keyCode === 38) {
+      oppai.moveHand(0, 0.1, 0);
+      if (oppai2) oppai2.moveHand(0, 0.1, 0);
+    }
+    else if (event.keyCode === 39) {
+      oppai.moveHand(0, 0, -0.1);
+      if (oppai2) oppai2.moveHand(0, 0, -0.1);
+    }
+    else if (event.keyCode === 40) {
+      oppai.moveHand(0, -0.1, 0);
+      if (oppai2) oppai2.moveHand(0, -0.1, 0);
+    }
   }
 });
 

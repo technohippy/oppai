@@ -63,6 +63,69 @@ function Oppai(id, geometry, center, fingerCount, isCore) {
     self.world.add(fingerBody);
     this.fingerBodies.push(fingerBody);
   }
+
+  /*
+  this.palmBody = this.createPalmBody();
+  this.palmBody.position.set(this.center.x + 12.5, this.center.y + 0, this.center.z + 0);
+  self.world.add(this.palmBody);
+  */
+};
+
+Oppai.prototype.createPalmBody = function() {
+  var unit = 1.5;
+
+  var palm1Shape = new CANNON.Box(new CANNON.Vec3(unit, unit*4, unit*5));
+  var palm2Shape = new CANNON.Box(new CANNON.Vec3(unit, unit*4/3, unit*4));
+  var finger0Shape = new CANNON.Box(new CANNON.Vec3(unit, unit*10/3, unit));
+  var finger1Shape = new CANNON.Box(new CANNON.Vec3(unit, unit*4, unit));
+  var finger2Shape = new CANNON.Box(new CANNON.Vec3(unit, unit*14/3, unit));
+  var finger3Shape = new CANNON.Box(new CANNON.Vec3(unit, unit*13/3, unit));
+  var finger4Shape = new CANNON.Box(new CANNON.Vec3(unit, unit*10/3, unit));
+
+  var isRight = this.center.z < 0 ? -1 : 1;
+  var shape = new CANNON.Compound();
+  shape.addChild(
+    palm1Shape, 
+    new CANNON.Vec3(0, 1, 0) 
+  );
+  shape.addChild(
+    palm2Shape, 
+    new CANNON.Vec3(-unit/3, -unit*2, unit/3 * isRight), 
+    this.getPalmQuaternion(0, -Math.PI / 180 * 30)
+  );
+  shape.addChild(
+    finger0Shape,
+    new CANNON.Vec3(-unit, unit, -unit*4 * isRight), 
+    this.getPalmQuaternion(-Math.PI / 180 * 30 * isRight, Math.PI / 180 * 30)
+  );
+  shape.addChild(
+    finger1Shape, 
+    new CANNON.Vec3(-unit*4/3, unit*14/3+unit/15, -unit*7/3 * isRight), 
+    this.getPalmQuaternion(-Math.PI / 180 * 10 * isRight, Math.PI / 180 * 30)
+  );
+  shape.addChild(
+    finger2Shape,
+    new CANNON.Vec3(-unit*4/3, unit*15/3+unit/15, -unit*12/15 * isRight), 
+    this.getPalmQuaternion(-Math.PI / 180 * 3 * isRight, Math.PI / 180 * 30));
+  shape.addChild(
+    finger3Shape,
+    new CANNON.Vec3(-unit*4/3, 4.1+6.5/2, (1+0.2) * isRight), 
+    this.getPalmQuaternion(Math.PI / 180 * 3 * isRight, Math.PI / 180 * 30)
+  );
+  shape.addChild(
+    finger4Shape,
+    new CANNON.Vec3(-unit*4/3, 4.1+5/2, (3+0.5) * isRight), 
+    this.getPalmQuaternion(Math.PI / 180 * 10 * isRight, Math.PI / 180 * 30)
+  );
+  return new CANNON.RigidBody(0, shape);
+};
+
+Oppai.prototype.getPalmQuaternion = function(x, z) {
+  var qx = new CANNON.Quaternion();
+  qx.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), x);
+  var qz = new CANNON.Quaternion();
+  qz.setFromAxisAngle(new CANNON.Vec3(0, 0, 1), z);
+  return qx.mult(qz);
 };
 
 Oppai.prototype.applyPressure = function() {
@@ -120,6 +183,15 @@ Oppai.prototype.step = function(dt) {
       };
     }, this)
   };
+  if (this.palmBody) {
+    messageParams['handPositions'] = {
+      hand: {
+        x: this.palmBody.position.x,
+        y: this.palmBody.position.y,
+        z: this.palmBody.position.z
+      }
+    };
+  }
   if (this.coreOppai) {
     messageParams['corePositions'] = this.coreOppai.oppaiBodies.map(function(body) {
       return {
@@ -130,6 +202,18 @@ Oppai.prototype.step = function(dt) {
     }, this);
   }
   self.postMessage(messageParams);
+};
+
+Oppai.prototype.moveHand = function(dx, dy, dz) {
+  this.palmBody.position.x += dx;
+  this.palmBody.position.y += dy;
+  this.palmBody.position.z += dz;
+};
+
+Oppai.prototype.movePalm = function(point) {
+  if (typeof(point.x) !== 'undefined') this.palmBody.position.x = point.x + center.x;
+  if (typeof(point.y) !== 'undefined') this.palmBody.position.y = point.y + center.y;
+  if (typeof(point.z) !== 'undefined') this.palmBody.position.z = point.z + center.z;
 };
 
 Oppai.prototype.shake = function() {
@@ -262,6 +346,21 @@ self.touch = function(data) {
 
 self.touchAt = function(data) {
   self.getOppaiById(data.id).touchAt(data.point, data.faces);
+};
+
+self.moveHand = function(data) {
+  self.getOppaiById(data.id).moveHand(data.dx, data.dy, data.dz);
+};
+
+self.setupPalm = function(data) {
+  var oppai = self.getOppaiById(data.id);
+  oppai.palmBody = oppai.createPalmBody();
+  oppai.palmBody.position.set(oppai.center.x + 12.5, oppai.center.y + 0, oppai.center.z + 0);
+  self.world.add(oppai.palmBody);
+};
+
+self.movePalm = function(data) {
+  self.getOppaiById(data.id).movePalm(data.point);
 };
 
 self.step = function(dt) {

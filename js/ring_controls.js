@@ -17,16 +17,16 @@ Oppai.RingControls = function(camera, center, lookAt, distance, initialAngle) {
   }
 
   document.addEventListener('keydown', function(event) {
-    if (event.keyCode == 39 || event.keyCode == 122) {
+    if ((!event.shiftKey && event.keyCode == 39) || event.keyCode == 122) {
       this.angle -= Math.PI * 0.01;
     }
-    else if (event.keyCode == 37 || event.keyCode == 99) {
+    else if ((!event.shiftKey && event.keyCode == 37) || event.keyCode == 99) {
       this.angle += Math.PI * 0.01;
     }
-    else if (event.keyCode == 38) {
+    else if (!event.shiftKey && event.keyCode == 38) {
       this.distance -= 0.5;
     }
-    else if (event.keyCode == 40) {
+    else if (!event.shiftKey && event.keyCode == 40) {
       this.distance += 0.5;
     }
   }.bind(this));
