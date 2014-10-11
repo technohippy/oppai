@@ -12,7 +12,10 @@ addEventListener('message', function(event) {
   var bluePoints = [];
 
   var step = 5;
+  var table = [];
   for (var x = 0; x < width; x+=step) {
+    var row = [];
+    table.push(row);
     for (var y = 0; y < height; y+=step) {
       var base = x * 4 + y * width * 4;
       var r = data[base];
@@ -21,6 +24,7 @@ addEventListener('message', function(event) {
       var a = data[base+3];
       if (isRed(r, g, b, a)) {
         redPoints.push({x:x, y:y});
+        row[y/step] = 0;
       }
       else if (isGreen(r, g, b, a)) {
         greenPoints.push({x:x, y:y});
@@ -28,8 +32,13 @@ addEventListener('message', function(event) {
       else if (isBlue(r, g, b, a)) {
         bluePoints.push({x:x, y:y});
       }
+
+      if (typeof(row[y/step]) === 'undefined') {
+        row[y/step] = -1;
+      }
     }
   }
+  console.log(table);
 
   var center = getCenter(redPoints);
   while (10 <= centers.length) {

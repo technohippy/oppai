@@ -29,7 +29,9 @@ var Detector = function(videoOrId, canvasOrId) {
     this.canvas.width = Detector.DEFAULT_WIDTH;
     this.canvas.height = Detector.DEFAULT_HEIGHT;
     this.canvas.style.position = 'absolute';
-    this.canvas.style.top = -Detector.DEFAULT_HEIGHT;
+//    this.canvas.style.top = -Detector.DEFAULT_HEIGHT;
+this.canvas.style.top = 0;
+this.canvas.style.left = 0;
     document.body.appendChild(this.canvas);
   }
   else if (canvasOrId instanceof HTMLElement) {

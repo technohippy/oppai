@@ -56,18 +56,19 @@ function startPalm(threeScene, opi, opi2) {
 
   var detector = new Detector();
   detector.addDetectHandler(function(data, gc) {
-    if (data.redPoints.size < 10) return;
+    if (data.size < 10) return;
 
-    var center = data.redPoints.centerAverage;
+    var center = data.centerAverage;
     var dx = center.x / Detector.DEFAULT_WIDTH - 0.5;
     var dy = center.y / Detector.DEFAULT_HEIGHT - 0.5;
 
-    var x = 15 - (data.redPoints.size - 10) / 150;
+    var x = 15 - (data.size - 10) / 150;
     var y = -dy * 15 - 2;
     var z = dx * 15;
     opi.movePalm({x:x, y:y, z:z});
     if (opi2) opi2.movePalm({x:x, y:y, z:z});
   });
+  detector.debugOn();
   detector.start();
   detector.detect();
 }
