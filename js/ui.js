@@ -67,3 +67,6 @@ document.getElementById('deflate-button').addEventListener(clickEvent(), functio
 document.getElementById('webcam-button').addEventListener(clickEvent(), function(event) {
   startPalm(threeScene, oppai, oppai2);
 });
+document.getElementById('debug-button').addEventListener(clickEvent(), function(event) {
+  detector.debug(!detector.debugOn);
+});

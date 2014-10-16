@@ -61,6 +61,15 @@ Oppai.Oppai.prototype.setupPalm = function() {
   });
 };
 
+Oppai.Oppai.prototype.grabPalm = function(degree) {
+  this.worker.postMessage({
+    id:this.id,
+    command:'grabPalm',
+    degree:degree
+  });
+  this.palm.grab(degree);
+};
+
 Oppai.Oppai.prototype.setupWorker = function(command) {
   this.worker.postMessage({
     id:this.id,

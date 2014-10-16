@@ -106,7 +106,8 @@ Oppai.prototype.createPalmBody = function() {
   shape.addChild(
     finger2Shape,
     new CANNON.Vec3(-unit*4/3, unit*15/3+unit/15, -unit*12/15 * isRight), 
-    this.getPalmQuaternion(-Math.PI / 180 * 3 * isRight, Math.PI / 180 * 30));
+    this.getPalmQuaternion(-Math.PI / 180 * 3 * isRight, Math.PI / 180 * 30)
+  );
   shape.addChild(
     finger3Shape,
     new CANNON.Vec3(-unit*4/3, 4.1+6.5/2, (1+0.2) * isRight), 
@@ -214,6 +215,50 @@ Oppai.prototype.movePalm = function(point) {
   if (typeof(point.x) !== 'undefined') this.palmBody.position.x = point.x + center.x;
   if (typeof(point.y) !== 'undefined') this.palmBody.position.y = point.y + center.y;
   if (typeof(point.z) !== 'undefined') this.palmBody.position.z = point.z + center.z;
+};
+
+Oppai.prototype.grabPalm = function(degree) {
+  var unit = 1.5;
+  var isRight = this.center.z < 0 ? -1 : 1;
+
+  var rad = Math.PI / 180 * degree;
+
+  this.palmBody.shape.childOrientations[2] = 
+    this.getPalmQuaternion(-Math.PI / 180 * 30 * isRight, rad);
+  this.palmBody.shape.childOrientations[3] =
+    this.getPalmQuaternion(-Math.PI / 180 * 10 * isRight, rad);
+  this.palmBody.shape.childOrientations[4] =
+    this.getPalmQuaternion(-Math.PI / 180 * 3 * isRight, rad);
+  this.palmBody.shape.childOrientations[5] =
+    this.getPalmQuaternion(Math.PI / 180 * 3 * isRight, rad);
+  this.palmBody.shape.childOrientations[6] =
+    this.getPalmQuaternion(Math.PI / 180 * 10 * isRight, rad);
+
+  this.palmBody.shape.childOffsets[2].set(
+    -(unit*10/3)/2*Math.sin(rad), 
+    unit/2+(unit*10/3)/2*Math.cos(rad), 
+    -unit*4 * isRight
+  );
+  this.palmBody.shape.childOffsets[3].set(
+    -(unit*4)/2*Math.sin(rad), 
+    unit*2.8+(unit*4)/2*Math.cos(rad), 
+    -unit*7/3 * isRight
+  );
+  this.palmBody.shape.childOffsets[4].set(
+    -(unit*14/3)/2*Math.sin(rad), 
+    unit*2.8+(unit*14/3)/2*Math.cos(rad), 
+    -unit*12/15 * isRight
+  );
+  this.palmBody.shape.childOffsets[5].set(
+    -(unit*13/3)/2*Math.sin(rad),
+    unit*2.8+(unit*13/3)/2*Math.cos(rad),
+    (1+0.2) * isRight
+  );
+  this.palmBody.shape.childOffsets[6].set(
+    -(unit*10/3)/2*Math.sin(rad),
+    unit*2.8+(unit*10/3)/2*Math.cos(rad),
+    (3+0.5) * isRight
+  );
 };
 
 Oppai.prototype.shake = function() {
@@ -361,6 +406,10 @@ self.setupPalm = function(data) {
 
 self.movePalm = function(data) {
   self.getOppaiById(data.id).movePalm(data.point);
+};
+
+self.grabPalm = function(data) {
+  self.getOppaiById(data.id).grabPalm(data.degree);
 };
 
 self.step = function(dt) {
