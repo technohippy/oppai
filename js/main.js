@@ -66,10 +66,16 @@ function startPalm(threeScene, opi, opi2) {
     var y = -dy * 15 - 2;
     var z = dx * 15;
     opi.movePalm({x:x, y:y, z:z});
-    var aspectRatio = data.aspectRatioAverage < 1 ? 1 / data.aspectRatioAverage : data.aspectRatioAverage;
-    if (!isNaN(aspectRatio)) opi.grabPalm(aspectRatio * 40);
-
     if (opi2) opi2.movePalm({x:x, y:y, z:z});
+
+    var aspectRatio = data.aspectRatioAverage < 1 ? 1 / data.aspectRatioAverage : data.aspectRatioAverage;
+    if (typeof aspectRatio !== 'undefined' && 
+      !isNaN(aspectRatio) && 
+      aspectRatio !== Number.POSITIVE_INFINITY) {
+      opi.grabPalm(aspectRatio * 30);
+      if (opi2) opi2.grabPalm(aspectRatio * 30);
+    }
+
   });
   detector.debug(false);
   detector.start();
@@ -155,5 +161,9 @@ document.addEventListener('keydown', function(event) {
   controls.update();
   threeRenderer.render(threeScene, threeCamera);
 })();
+
+if (window.confirm('Do you want to use your webcam as a controller?')) {
+  startPalm(threeScene, oppai, oppai2);
+}
 
 //})();

@@ -23,6 +23,7 @@ Oppai.Oppai = function(center, worker) {
   this.threeGeometry.computeFaceNormals();
   this.threeGeometry.computeVertexNormals();
   var material = new THREE.MeshPhongMaterial({
+//    color: 0x000000, 
     color: 0xffccaa, 
 //    emissive: 0x0f0603,
     wireframeLinewidth: 1,
