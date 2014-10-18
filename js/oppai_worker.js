@@ -55,20 +55,12 @@ function Oppai(id, geometry, center, fingerCount, isCore) {
   }, this);
 
   var fingerMaterial = new CANNON.Material('fingerMaterial');
-//  self.world.addContactMaterial(new CANNON.ContactMaterial(fingerMaterial, fingerMaterial, {
-//  }));
   for (var i = 0; i < this.fingerCount; i++) {
     var fingerBody = new CANNON.RigidBody(5-0.8*i, new CANNON.Box(new CANNON.Vec3(2, 2, 2)), fingerMaterial);
     fingerBody.position.set(0, -100, 100 * (i + 1));
     self.world.add(fingerBody);
     this.fingerBodies.push(fingerBody);
   }
-
-  /*
-  this.palmBody = this.createPalmBody();
-  this.palmBody.position.set(this.center.x + 12.5, this.center.y + 0, this.center.z + 0);
-  self.world.add(this.palmBody);
-  */
 };
 
 Oppai.prototype.createPalmBody = function() {
@@ -90,8 +82,8 @@ Oppai.prototype.createPalmBody = function() {
   );
   shape.addChild(
     palm2Shape, 
-    new CANNON.Vec3(-unit/3, -unit*2, unit/3 * isRight), 
-    this.getPalmQuaternion(0, -Math.PI / 180 * 30)
+    new CANNON.Vec3(unit/3, -unit*2.2, unit/3 * isRight), 
+    this.getPalmQuaternion(0, Math.PI / 180 * 30)
   );
   shape.addChild(
     finger0Shape,
@@ -118,7 +110,9 @@ Oppai.prototype.createPalmBody = function() {
     new CANNON.Vec3(-unit*4/3, 4.1+5/2, (3+0.5) * isRight), 
     this.getPalmQuaternion(Math.PI / 180 * 10 * isRight, Math.PI / 180 * 30)
   );
-  return new CANNON.RigidBody(0, shape);
+  var rigidBody = new CANNON.RigidBody(0, shape);
+  //rigidBody.quaternion = this.getPalmQuaternion(Math.PI / 3 * isRight, 0);
+  return rigidBody;
 };
 
 Oppai.prototype.getPalmQuaternion = function(x, z) {

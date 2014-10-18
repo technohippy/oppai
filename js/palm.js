@@ -23,8 +23,8 @@ Oppai.Palm = function(center) {
 
   this.isRight = center.z < 0 ? -1 : 1;
   this.palm1.position.set(0, 1, 0);
-  this.palm2.position.set(-this.unit/3, -this.unit*2, this.unit/3 * this.isRight);
-  this.palm2.rotation.z = -Math.PI / 180 * 30;
+  this.palm2.position.set(this.unit/3, -this.unit*2.2, this.unit/3 * this.isRight);
+  this.palm2.rotation.z = Math.PI / 180 * 30;
   this.finger0.position.set(-this.unit, this.unit, -this.unit*4 * this.isRight);
   this.finger0.rotation.x = -Math.PI / 180 * 30 * this.isRight;
   this.finger1.position.set(-this.unit*4/3, this.unit*14/3+this.unit/15, -this.unit*7/3 * this.isRight);
@@ -49,6 +49,7 @@ Oppai.Palm = function(center) {
 
   this.threeMesh.castShadow = true;
   this.threeMesh.position.set(center.x, center.y, center.z);
+  //this.threeMesh.rotation.x = Math.PI / 3 * this.isRight;
 };
 
 Oppai.Palm.prototype.grab = function(degree) {

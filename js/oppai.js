@@ -36,13 +36,7 @@ Oppai.Oppai = function(center, worker) {
     this.threeMesh.receiveShadow = true;
   }
 
-//  this.coreGeometry = new THREE.IcosahedronGeometry(7.2, 2)
-//  this.coreMesh = new THREE.Mesh(this.coreGeometry, material);
-
   this.threeFingers = [];
-
-//  this.tkbLight = new THREE.PointLight(0xff0000, 50, 5);
-//  this.tkbLight.position.z += 100; // out of view
 
   if (typeof(worker) === 'undefined') {
     this.worker = new Worker('js/oppai_worker.js');

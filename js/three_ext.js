@@ -1,15 +1,7 @@
 THREE.Scene.prototype.add = function(object) {
   if (object instanceof Oppai.Oppai) {
     this.add(object.threeMesh);
-    if (object.coreMesh) {
-      this.add(object.coreMesh);
-    }
-    if (object.tkbLight) {
-      this.add(object.tkbLight);
-    }
-    if (object.palm) {
-      this.add(object.palm);
-    }
+    if (object.palm)  this.add(object.palm);
   }
   else if (object instanceof Oppai.Hand) {
     this.add(object.threeFinger);

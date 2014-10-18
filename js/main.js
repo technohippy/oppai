@@ -5,7 +5,6 @@ function constructSpotLight() {
   //var light = new THREE.SpotLight(0xffffff, 3, 100, Math.PI*3/4, 0.1);
   var light = new THREE.SpotLight(0xffffff, 3, 110, Math.PI*3/4, 0.1);
   light.position.set(60, 40, 0);
-  //light.position.set(60, 40, 30);
   light.target.position = new THREE.Vector3();
   light.castShadow = true;
   light.shadowDarkness = 0.3;
@@ -77,16 +76,14 @@ function startPalm(threeScene, opi, opi2) {
     }
 
   });
-  detector.debug(false);
+  detector.debug(true);
   detector.start();
   detector.detect();
 }
 
 var threeScene = new THREE.Scene();
 threeScene.add(constructSpotLight());
-//threeScene.add(constructDirectionalLight(new THREE.Vector3(0.3, -1, 0), 0x333333));
 threeScene.add(constructDirectionalLight(new THREE.Vector3(0.3, -1, 0), 0x443333));
-//threeScene.add(constructPointLight());
 threeScene.add(new THREE.AmbientLight(0x0f0603));
 
 var threeCamera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight);
@@ -104,7 +101,6 @@ if (location.search === '?1') {
 }
 else {
   oppai = new Oppai.Oppai(new THREE.Vector3(0, 0, -11));
-  //oppai2 = new Oppai.Oppai(new THREE.Vector3(0, 0, 11), oppai.worker);
   oppai2 = new Oppai.Oppai(new THREE.Vector3(0, 0, 11));
   hand = new Oppai.Hand(oppai, threeCamera, threeScene);
   hand2 = new Oppai.Hand(oppai2, threeCamera, threeScene);
