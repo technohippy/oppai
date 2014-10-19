@@ -255,6 +255,10 @@ Oppai.prototype.grabPalm = function(degree) {
   );
 };
 
+Oppai.prototype.rotatePalm = function(radian) {
+  this.palmBody.quaternion = this.getPalmQuaternion(radian, 0);
+};
+
 Oppai.prototype.shake = function() {
   this.oppaiBodies.forEach(function(body) {
     if (0 < body.position.x) {
@@ -404,6 +408,10 @@ self.movePalm = function(data) {
 
 self.grabPalm = function(data) {
   self.getOppaiById(data.id).grabPalm(data.degree);
+};
+
+self.rotatePalm = function(data) {
+  self.getOppaiById(data.id).rotatePalm(data.radian);
 };
 
 self.step = function(dt) {

@@ -68,17 +68,24 @@ function startPalm(threeScene, opi, opi2) {
     if (opi2) opi2.movePalm({x:x, y:y, z:z});
 
     var aspectRatio = data.aspectRatioAverage < 1 ? 1 / data.aspectRatioAverage : data.aspectRatioAverage;
-    if (typeof aspectRatio !== 'undefined' && 
-      !isNaN(aspectRatio) && 
-      aspectRatio !== Number.POSITIVE_INFINITY) {
+    if (isValidNumber(aspectRatio)) {
       opi.grabPalm(aspectRatio * 30);
       if (opi2) opi2.grabPalm(aspectRatio * 30);
     }
 
+    var angle = data.angle;
+    if (isValidNumber(angle)) {
+      opi.rotatePalm(-angle);
+      if (opi2) opi2.rotatePalm(angle);
+    }
   });
   detector.debug(true);
   detector.start();
   detector.detect();
+}
+
+function isValidNumber(val) {
+  return typeof val !== 'undefined' && !isNaN(val) && val !== Number.POSITIVE_INFINITY;
 }
 
 var threeScene = new THREE.Scene();

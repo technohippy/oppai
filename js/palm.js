@@ -49,7 +49,6 @@ Oppai.Palm = function(center) {
 
   this.threeMesh.castShadow = true;
   this.threeMesh.position.set(center.x, center.y, center.z);
-  //this.threeMesh.rotation.x = Math.PI / 3 * this.isRight;
 };
 
 Oppai.Palm.prototype.grab = function(degree) {
@@ -85,6 +84,10 @@ Oppai.Palm.prototype.grab = function(degree) {
     this.unit*2.8+(this.unit*10/3)/2*Math.cos(rad),
     (3+0.5) * this.isRight
   );
+};
+
+Oppai.Palm.prototype.rotate = function(radian) {
+  this.threeMesh.rotation.x = radian;
 };
 
 }).call(this, Oppai);

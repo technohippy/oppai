@@ -65,6 +65,15 @@ Oppai.Oppai.prototype.grabPalm = function(degree) {
   this.palm.grab(degree);
 };
 
+Oppai.Oppai.prototype.rotatePalm = function(radian) {
+  this.worker.postMessage({
+    id:this.id,
+    command:'rotatePalm',
+    radian:radian
+  });
+  this.palm.rotate(radian);
+};
+
 Oppai.Oppai.prototype.setupWorker = function(command) {
   this.worker.postMessage({
     id:this.id,
