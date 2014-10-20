@@ -7,25 +7,83 @@
     <link rel="stylesheet" href="style.css" type="text/css"/>
   </head>
   <body>
-    <button id="sidebar-button" class="sidebar-button close"></button>
+    <button id="sidebar-button" class="sidebar-button close" style="background-color:#f99"></button>
     <div id="sidebar" class="close">
-      <button id="plane-button" class="sidebar-button"></button>
-      <button id="mesh-button" class="sidebar-button"></button>
+      <button id="help-button" class="help-button sidebar-button" style="background-color:#ff9"></button>
       <br/>
-      <button id="turn-right-button" class="sidebar-button"></button>
-      <button id="turn-left-button" class="sidebar-button"></button>
+      <button id="plane-button" class="plane-button sidebar-button"></button>
+      <button id="mesh-button" class="mesh-button sidebar-button"></button>
       <br/>
-      <button id="zoom-in-button" class="sidebar-button"></button>
-      <button id="zoom-out-button" class="sidebar-button"></button>
+      <button id="turn-right-button" class="turn-right-button sidebar-button"></button>
+      <button id="turn-left-button" class="turn-left-button sidebar-button"></button>
       <br/>
-      <button id="throw-button" class="sidebar-button"></button>
-      <button id="shake-button" class="sidebar-button"></button>
+      <button id="zoom-in-button" class="zoom-in-button sidebar-button"></button>
+      <button id="zoom-out-button" class="zoom-out-button sidebar-button"></button>
       <br/>
-      <button id="inflate-button" class="sidebar-button"></button>
-      <button id="deflate-button" class="sidebar-button"></button>
+      <button id="throw-button" class="throw-button sidebar-button"></button>
+      <button id="shake-button" class="shake-button sidebar-button"></button>
       <br/>
-      <button id="webcam-button" class="sidebar-button"></button>
-      <button id="debug-button" class="sidebar-button"></button>
+      <button id="inflate-button" class="inflate-button sidebar-button"></button>
+      <button id="deflate-button" class="deflate-button sidebar-button"></button>
+      <br/>
+      <button id="webcam-button" class="webcam-button sidebar-button"></button>
+      <button id="debug-button" class="debug-button sidebar-button"></button>
+    </div>
+    <div id="help" class="hide">
+      <table>
+        <tr>
+          <th><button class="help-button sidebar-button" style="background-color:#ff9"></button></th>
+          <td>Show This Help</td>
+        </tr>
+        <tr>
+          <th><button class="plane-button sidebar-button"></button></th>
+          <td>Use Texture</td>
+          <th><button class="mesh-button sidebar-button"></button></th>
+          <td>Use Wireframe</td>
+        </tr>
+        <tr>
+          <th><button class="turn-right-button sidebar-button"></button></th>
+          <td>Turn The Camera Right</td>
+          <th><button class="turn-left-button sidebar-button"></button></th>
+          <td>Turn The Camera  Left</td>
+        </tr>
+        <tr>
+          <th><button class="zoom-in-button sidebar-button"></button></th>
+          <td>Zoom In</td>
+          <th><button class="zoom-out-button sidebar-button"></button></th>
+          <td>Zoom Out</td>
+        </tr>
+        <tr>
+          <th><button class="throw-button sidebar-button"></button></th>
+          <td>Throw Balls</td>
+          <th><button class="shake-button sidebar-button"></button></th>
+          <td>Shake Boobs</td>
+        </tr>
+        <tr>
+          <th><button class="inflate-button sidebar-button"></button></th>
+          <td>Revive</td>
+          <th><button class="deflate-button sidebar-button"></button></th>
+          <td>Catastrophe</td>
+        </tr>
+        <tr>
+          <th><button class="webcam-button sidebar-button"></button></th>
+          <td>Use Webcam Controller</td>
+          <th><button class="debug-button sidebar-button"></button></th>
+          <td>Debug Mode for Webcam Controller</td>
+        </tr>
+        <tr>
+          <th>Mouse Drag</th>
+          <td colspan="3">Touch Boobs</td>
+        </tr>
+        <tr>
+          <th>Cursor Keys</th>
+          <td colspan="3">Change Point of View</td>
+        </tr>
+        <tr>
+          <th>WebCam Controller</th>
+          <td colspan="3">Open <a href="http://technohippy.github.io/oppai/hand.html">http://technohippy.github.io/oppai/hand.html</a> on your Smartphone and Move it with the screen turned to the webcam.</td>
+        </tr>
+      </table>
     </div>
     <script src="lib/cannon.js"></script>
     <script src="lib/Three.js"></script>
