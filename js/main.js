@@ -135,7 +135,15 @@ document.addEventListener('keydown', function(event) {
   }
   else if (event.keyCode === 87/*w*/) {
     oppai.threeMesh.material.wireframe = !oppai.threeMesh.material.wireframe;
-    if (oppai2) oppai2.threeMesh.material.wireframe = !oppai2.threeMesh.material.wireframe;
+    oppai.threeFingers.forEach(function(finger, i) {
+      finger.material.wireframe = oppai.threeMesh.material.wireframe;
+    }, this);
+    if (oppai2) {
+      oppai2.threeMesh.material.wireframe = !oppai2.threeMesh.material.wireframe;
+      oppai2.threeFingers.forEach(function(finger, i) {
+        finger.material.wireframe = oppai.threeMesh.material.wireframe;
+      }, this);
+    }
   }
   else if (event.keyCode === 88/*x*/) {
     oppai.togglePressure();
