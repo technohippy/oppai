@@ -79,11 +79,20 @@ function startPalm(threeScene, opi, opi2) {
       if (opi2) opi2.rotatePalm(angle);
     }
   });
-  detector.debug(true);
+  detector.debug(true); // TODO: 何故かいる？？
   detector.debug(false);
   detector.start();
   detector.detect();
   window.detector = detector; // TODO: ui.jsで使うために無理やり。あとで直す
+}
+
+function stopPalm(threeScene, oppai, oppai2) {
+  // TODO
+}
+
+function togglePalm(threeScene, oppai, oppai2) {
+  // TODO
+  startPalm(threeScene, oppai, oppai2);
 }
 
 function isValidNumber(val) {
@@ -167,8 +176,9 @@ document.addEventListener('keydown', function(event) {
   threeRenderer.render(threeScene, threeCamera);
 })();
 
-if (window.confirm('Do you want to use your webcam as a controller?')) {
-  startPalm(threeScene, oppai, oppai2);
-}
+// TODO
+//if (window.confirm('Do you want to use your webcam as a controller?')) {
+//  startPalm(threeScene, oppai, oppai2);
+//}
 
 //})();
