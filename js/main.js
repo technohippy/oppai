@@ -80,8 +80,10 @@ function startPalm(threeScene, opi, opi2) {
     }
   });
   detector.debug(true);
+  detector.debug(false);
   detector.start();
   detector.detect();
+  window.detector = detector; // TODO: ui.jsで使うために無理やり。あとで直す
 }
 
 function isValidNumber(val) {

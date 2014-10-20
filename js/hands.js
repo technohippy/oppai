@@ -13,7 +13,7 @@ Oppai.Hand = function(oppai, camera, scene) {
   this.threeFinger = new THREE.Mesh(
     new THREE.SphereGeometry(2, 16, 16), 
     new THREE.MeshPhongMaterial({
-      color: 0x0000ff, wireframe: Oppai.isSmartphone
+      color: 0x0000ff, wireframe: this.oppai.threeMesh.material.wireframe
     })
   );
   this.threeFinger.position.set(0, -100, 0);
