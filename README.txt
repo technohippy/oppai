@@ -1,7 +1,2 @@
-http://technohippy.github.io/oppai/
-
-Space Key: throw a box
-Enter Key: shake
-Left/Right Cursor Keys: rotate
-'z', 'c': rotate
-'w': toggle wireframe
+App: http://technohippy.github.io/oppai/
+Youtube: https://www.youtube.com/watch?v=Zw_8x4XmgU4
